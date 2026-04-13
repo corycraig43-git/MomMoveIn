@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fran's Move-In Plan — July 1, 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #2980B9; --blue-light: #EBF5FB; --blue-dark: #1a5276;
+    --green: #27AE60; --green-light: #EAFAF1;
+    --amber: #D68910; --amber-light: #FEF9E7;
+    --red: #C0392B; --red-light: #FDEDEC;
+    --text: #1a1a2e; --muted: #6b7280; --border: #e5e7eb;
+    --bg: #f8f7f4; --card: #ffffff;
+    --radius: 12px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  header {
+    background: var(--text);
+    color: white;
+    padding: 2.5rem 2rem 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,.03) 40px, rgba(255,255,255,.03) 80px);
+  }
+  header .inner { max-width: 760px; margin: 0 auto; position: relative; }
+  header h1 { font-family: 'DM Serif Display', serif; font-size: clamp(1.8rem, 5vw, 2.8rem); font-weight: 400; letter-spacing: -.5px; margin-bottom: .4rem; }
+  header p { font-size: .95rem; color: rgba(255,255,255,.55); }
+  .countdown { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.15); border-radius: 999px; padding: 5px 14px; font-size: .82rem; margin-top: 1rem; color: rgba(255,255,255,.8); }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: #4ade80; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+  main { max-width: 760px; margin: 0 auto; padding: 2rem 1rem 4rem; }
+
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 2rem; }
+  .stat { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.25rem; }
+  .stat-label { font-size: .75rem; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: .3rem; }
+  .stat-val { font-size: 1.8rem; font-weight: 500; color: var(--text); line-height: 1; }
+
+  .key-dates { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 2rem; overflow: hidden; }
+  .key-dates-header { padding: .85rem 1.25rem; border-bottom: 1px solid var(--border); font-size: .8rem; font-weight: 500; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); cursor: pointer; display: flex; align-items: center; justify-content: space-between; user-select: none; }
+  .key-dates-header:hover { background: #f9f9f9; }
+  .kd-chevron { transition: transform .2s; font-size: .75rem; }
+  .kd-chevron.open { transform: rotate(180deg); }
+  .date-row { display: flex; align-items: center; gap: 1rem; padding: .75rem 1.25rem; border-bottom: 1px solid var(--border); font-size: .9rem; }
+  .date-row:last-child { border-bottom: none; }
+  .date-chip { font-size: .75rem; font-weight: 500; background: var(--blue-light); color: var(--blue-dark); border-radius: 6px; padding: 3px 9px; white-space: nowrap; min-width: 60px; text-align: center; }
+  .date-label { color: var(--text); flex: 1; }
+
+  .section-label { font-size: .75rem; font-weight: 500; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: .75rem; }
+
+  .phase { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 1rem; overflow: hidden; }
+  .phase-head { display: flex; align-items: center; gap: 10px; padding: .85rem 1.25rem; cursor: pointer; user-select: none; transition: background .12s; }
+  .phase-head:hover { background: #fafafa; }
+  .phase-pill { font-size: .7rem; font-weight: 500; padding: 3px 10px; border-radius: 999px; white-space: nowrap; flex-shrink: 0; }
+  .phase-title { font-size: .95rem; font-weight: 500; flex: 1; }
+  .phase-dates { font-size: .78rem; color: var(--muted); white-space: nowrap; }
+  .phase-stat { font-size: .78rem; color: var(--muted); white-space: nowrap; }
+  .ph-chevron { font-size: .7rem; color: #aaa; transition: transform .2s; flex-shrink: 0; }
+  .ph-chevron.open { transform: rotate(180deg); }
+  .prog-wrap { height: 3px; background: #f0f0f0; }
+  .prog-bar { height: 3px; transition: width .4s ease; }
+
+  .task-list { border-top: 1px solid var(--border); }
+  .task {
+    display: flex; align-items: center; gap: 10px;
+    padding: .7rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+    cursor: grab; transition: background .12s;
+    -webkit-user-select: none; user-select: none;
+  }
+  .task:last-child { border-bottom: none; }
+  .task:hover { background: #fafafa; }
+  .task.dragging { opacity: .35; cursor: grabbing; }
+  .task.drag-over { background: #EBF5FB; border-color: #b0d4f0; }
+  .drag-handle { color: #ccc; font-size: .9rem; cursor: grab; flex-shrink: 0; line-height: 1; }
+  .task:hover .drag-handle { color: #aaa; }
+
+  .cb {
+    width: 18px; height: 18px; border-radius: 5px;
+    border: 1.5px solid #d1d5db; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    transition: all .15s; cursor: pointer; background: white;
+  }
+  .task.done .cb { background: #16a34a; border-color: #16a34a; }
+  .cb svg { opacity: 0; }
+  .task.done .cb svg { opacity: 1; }
+
+  .task-body { flex: 1; min-width: 0; }
+  .task-name { font-size: .88rem; color: var(--text); line-height: 1.4; }
+  .task.done .task-name { text-decoration: line-through; color: #9ca3af; }
+  .task-detail { font-size: .77rem; color: var(--muted); margin-top: 2px; line-height: 1.4; }
+  .task.done .task-detail { color: #c4c9d1; }
+
+  .prio {
+    font-size: .68rem; font-weight: 500; padding: 2px 8px;
+    border-radius: 999px; cursor: pointer; flex-shrink: 0;
+    transition: opacity .15s; white-space: nowrap;
+  }
+  .prio:hover { opacity: .75; }
+  .prio-high { background: #FEE2E2; color: #991B1B; }
+  .prio-med  { background: #FEF3C7; color: #92400E; }
+  .prio-low  { background: #D1FAE5; color: #065F46; }
+
+  footer { text-align: center; font-size: .78rem; color: var(--muted); padding: 2rem 1rem 3rem; }
+
+  @media (max-width: 500px) {
+    .stats { grid-template-columns: repeat(3,1fr); gap: 8px; }
+    .stat-val { font-size: 1.4rem; }
+    .phase-dates { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="inner">
+    <h1>Fran's Move-In Plan</h1>
+    <p>Preparing the home for a smooth July 1st move-in</p>
+    <div class="countdown"><span class="dot"></span><span id="countdown-text">Loading...</span></div>
+  </div>
+</header>
+
+<main>
+  <div class="stats">
+    <div class="stat"><div class="stat-label">Total</div><div class="stat-val" id="s-total">0</div></div>
+    <div class="stat"><div class="stat-label">Done</div><div class="stat-val" id="s-done">0</div></div>
+    <div class="stat"><div class="stat-label">Progress</div><div class="stat-val" id="s-pct">0%</div></div>
+  </div>
+
+  <div class="key-dates">
+    <div class="key-dates-header" id="kd-toggle">
+      Key dates
+      <span class="kd-chevron open" id="kd-chevron">▼</span>
+    </div>
+    <div id="kd-body">
+      <div class="date-row"><span class="date-chip">Apr 25</span><span class="date-label">Visit Fran — discuss move plans &amp; choose paint colors</span></div>
+      <div class="date-row"><span class="date-chip">May 1</span><span class="date-label">Phase 1 deadline: planning &amp; decluttering complete</span></div>
+      <div class="date-row"><span class="date-chip">May 2</span><span class="date-label">Nephews painting — outside confirmed, inside TBD</span></div>
+      <div class="date-row"><span class="date-chip">May 31</span><span class="date-label">Phase 2 deadline: structural improvements complete</span></div>
+      <div class="date-row"><span class="date-chip">Jun 15</span><span class="date-label">Phase 3 deadline: moving &amp; logistics complete</span></div>
+      <div class="date-row"><span class="date-chip" style="background:#D1FAE5;color:#065F46;">Jul 1</span><span class="date-label" style="font-weight:500;">Move-in day — Fran moves in!</span></div>
+    </div>
+  </div>
+
+  <p class="section-label">Task checklist</p>
+  <div id="phases-root"></div>
+</main>
+
+<footer>Last updated April 2026 &nbsp;·&nbsp; Move-in: July 1, 2026</footer>
+
+<script>
+const PHASES = [
+  {id:"p1",label:"Phase 1",title:"Planning & Decluttering",dates:"Now – May 1",pill:"#EBF5FB",pillText:"#1a5276",bar:"#2980B9",
+   tasks:[
+    {id:"t1",name:"Clean out both closets",detail:"Sort into keep, donate, trash — free up space for Fran's belongings.",prio:"high"},
+    {id:"t2",name:"Empty hall closet",detail:"Clear for general storage or extra linens.",prio:"high"},
+    {id:"t3",name:"Relocate hat supplies",detail:"Move to long-term or alternate storage area.",prio:"med"},
+    {id:"t4",name:"Clean out garage shelves",detail:"Clear shelves to create space for storage tubs.",prio:"med"},
+    {id:"t5",name:"Get small storage unit & tubs",detail:"Purchase plastic tubs; use unit for overflow items from garage.",prio:"low"},
+  ]},
+  {id:"p2",label:"Phase 2",title:"Structural Improvements",dates:"May 1 – May 31",pill:"#EAFAF1",pillText:"#1e8449",bar:"#27AE60",
+   tasks:[
+    {id:"t6",name:"Replace carpet in both bedrooms",detail:"Schedule professionals before furniture moves in.",prio:"high"},
+    {id:"t7",name:"Paint rooms — Fran's choice of color",detail:"Paint while rooms are empty. Colors chosen on April 25 visit.",prio:"high"},
+    {id:"t8",name:"Nephews painting — May 2",detail:"Outside confirmed. Inside TBD — confirm with nephews by April 29.",prio:"high"},
+    {id:"t9",name:"Maximize under-stair closet storage",detail:"Install shelving or hooks to maximize functionality.",prio:"med"},
+    {id:"t10",name:"Install taller toilet",detail:"Comfort and accessibility improvement for Fran.",prio:"high"},
+    {id:"t11",name:"Order adjustable bed",detail:"Order and arrange delivery ahead of move-in.",prio:"med"},
+  ]},
+  {id:"p3",label:"Phase 3",title:"Moving & Logistics",dates:"Jun 1 – Jun 15",pill:"#FEF9E7",pillText:"#7d6608",bar:"#D68910",
+   tasks:[
+    {id:"t12",name:"Move drums upstairs",detail:"Clear downstairs area and relocate drums to new spot.",prio:"high"},
+    {id:"t13",name:"New car — trade in Volvo",detail:"Research options, get Volvo appraisal, finalize trade-in by late June.",prio:"med"},
+  ]},
+  {id:"p4",label:"Phase 4",title:"Final Preparation & Move-In",dates:"Jun 15 – Jul 1",pill:"#FDEDEC",pillText:"#922b21",bar:"#C0392B",
+   tasks:[
+    {id:"t14",name:"Final deep clean",detail:"Deep clean newly painted rooms and installed carpets.",prio:"high"},
+    {id:"t15",name:"Move-in day — July 1",detail:"Assemble furniture and organize Fran's personal items.",prio:"high"},
+    {id:"t16",name:"Confirm all logistics complete",detail:"Verify car, storage, toilet, bed, and accessibility items are in order.",prio:"med"},
+  ]},
+];
+
+const STORAGE_KEY = 'fran_tracker_v1';
+
+function loadState() {
+  try {
+    const s = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+    return {
+      checked: new Set(s.checked || []),
+      collapsed: new Set(s.collapsed || []),
+      phases: s.phases ? s.phases : PHASES.map(p => ({...p, tasks: p.tasks.map(t => ({...t}))})),
+      prioMap: s.prioMap || {},
+    };
+  } catch(e) { return { checked: new Set(), collapsed: new Set(), phases: PHASES.map(p => ({...p, tasks: p.tasks.map(t => ({...t}))})), prioMap: {} }; }
+}
+
+function saveState(state) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      checked: [...state.checked],
+      collapsed: [...state.collapsed],
+      phases: state.phases,
+      prioMap: state.prioMap,
+    }));
+  } catch(e) {}
+}
+
+const state = loadState();
+let dragSrc = null, dragPhaseId = null;
+
+function cyclePrio(p) { return p === 'high' ? 'med' : p === 'med' ? 'low' : 'high'; }
+function prioLabel(p) { return p === 'high' ? 'High' : p === 'med' ? 'Med' : 'Low'; }
+function prioClass(p) { return 'prio prio-' + p; }
+
+function updateStats() {
+  let total = 0, done = 0;
+  state.phases.forEach(ph => ph.tasks.forEach(t => { total++; if (state.checked.has(t.id)) done++; }));
+  document.getElementById('s-total').textContent = total;
+  document.getElementById('s-done').textContent = done;
+  document.getElementById('s-pct').textContent = total ? Math.round(done / total * 100) + '%' : '0%';
+}
+
+function updateCountdown() {
+  const target = new Date('2026-07-01');
+  const now = new Date();
+  const days = Math.ceil((target - now) / 86400000);
+  const el = document.getElementById('countdown-text');
+  if (days > 0) el.textContent = days + ' days until move-in';
+  else if (days === 0) el.textContent = 'Move-in day is today!';
+  else el.textContent = 'Fran has moved in!';
+}
+
+function render() {
+  const root = document.getElementById('phases-root');
+  root.innerHTML = '';
+
+  state.phases.forEach(ph => {
+    const total = ph.tasks.length;
+    const done = ph.tasks.filter(t => state.checked.has(t.id)).length;
+    const pct = total ? Math.round(done / total * 100) : 0;
+    const isOpen = !state.collapsed.has(ph.id);
+
+    const wrap = document.createElement('div');
+    wrap.className = 'phase';
+
+    const head = document.createElement('div');
+    head.className = 'phase-head';
+    head.innerHTML = `
+      <span class="phase-pill" style="background:${ph.pill};color:${ph.pillText}">${ph.label}</span>
+      <span class="phase-title">${ph.title}</span>
+      <span class="phase-dates">${ph.dates}</span>
+      <span class="phase-stat">${done}/${total}</span>
+      <span class="ph-chevron ${isOpen ? 'open' : ''}">▼</span>
+    `;
+    head.addEventListener('click', () => {
+      state.collapsed.has(ph.id) ? state.collapsed.delete(ph.id) : state.collapsed.add(ph.id);
+      saveState(state); render(); updateStats();
+    });
+    wrap.appendChild(head);
+
+    const progWrap = document.createElement('div');
+    progWrap.className = 'prog-wrap';
+    const progBar = document.createElement('div');
+    progBar.className = 'prog-bar';
+    progBar.style.width = pct + '%';
+    progBar.style.background = ph.bar;
+    progWrap.appendChild(progBar);
+    wrap.appendChild(progWrap);
+
+    if (isOpen) {
+      const tl = document.createElement('div');
+      tl.className = 'task-list';
+
+      ph.tasks.forEach((t, idx) => {
+        const isDone = state.checked.has(t.id);
+        const currentPrio = state.prioMap[t.id] || t.prio;
+
+        const row = document.createElement('div');
+        row.className = 'task' + (isDone ? ' done' : '');
+        row.draggable = true;
+        row.innerHTML = `
+          <span class="drag-handle">⠿</span>
+          <div class="cb">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+              <path d="M1.5 5l2.5 2.5 4.5-5" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="task-body">
+            <div class="task-name">${t.name}</div>
+            <div class="task-detail">${t.detail}</div>
+          </div>
+          <span class="${prioClass(currentPrio)}" data-tid="${t.id}">${prioLabel(currentPrio)}</span>
+        `;
+
+        row.querySelector('.cb').addEventListener('click', e => {
+          e.stopPropagation();
+          state.checked.has(t.id) ? state.checked.delete(t.id) : state.checked.add(t.id);
+          saveState(state); render(); updateStats();
+        });
+
+        row.querySelector('.prio').addEventListener('click', e => {
+          e.stopPropagation();
+          const cur = state.prioMap[t.id] || t.prio;
+          state.prioMap[t.id] = cyclePrio(cur);
+          saveState(state); render();
+        });
+
+        row.addEventListener('dragstart', e => {
+          dragSrc = idx; dragPhaseId = ph.id;
+          setTimeout(() => row.classList.add('dragging'), 0);
+          e.dataTransfer.effectAllowed = 'move';
+        });
+        row.addEventListener('dragend', () => {
+          document.querySelectorAll('.task').forEach(r => r.classList.remove('dragging', 'drag-over'));
+        });
+        row.addEventListener('dragover', e => { e.preventDefault(); row.classList.add('drag-over'); });
+        row.addEventListener('dragleave', () => row.classList.remove('drag-over'));
+        row.addEventListener('drop', e => {
+          e.preventDefault();
+          row.classList.remove('drag-over');
+          if (dragPhaseId !== ph.id || dragSrc === null || dragSrc === idx) return;
+          const [moved] = ph.tasks.splice(dragSrc, 1);
+          ph.tasks.splice(idx, 0, moved);
+          dragSrc = null;
+          saveState(state); render(); updateStats();
+        });
+
+        tl.appendChild(row);
+      });
+
+      wrap.appendChild(tl);
+    }
+
+    root.appendChild(wrap);
+  });
+
+  updateStats();
+}
+
+document.getElementById('kd-toggle').addEventListener('click', () => {
+  const body = document.getElementById('kd-body');
+  const chevron = document.getElementById('kd-chevron');
+  const hidden = body.style.display === 'none';
+  body.style.display = hidden ? '' : 'none';
+  chevron.classList.toggle('open', hidden);
+});
+
+updateCountdown();
+render();
+</script>
+</body>
+</html>
