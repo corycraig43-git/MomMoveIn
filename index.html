@@ -4,43 +4,29 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Fran's Move-In Plan — July 1, 2026</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #f7f6f2;
-  --card: #ffffff;
-  --text: #1c1c2e;
-  --muted: #6b7280;
-  --border: #e5e4df;
-  --radius: 14px;
-  --blue: #2980B9; --blue-lt: #EBF5FB; --blue-dk: #1a5276;
-  --green: #27AE60; --green-lt: #EAFAF1; --green-dk: #1a7a44;
-  --amber: #D68910; --amber-lt: #FEF9E7; --amber-dk: #7d5a0a;
-  --red: #C0392B; --red-lt: #FDEDEC; --red-dk: #8a2820;
+  --bg:#f7f6f2; --card:#fff; --text:#1c1c2e; --muted:#6b7280; --border:#e5e4df; --radius:14px;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
-
 header{background:var(--text);color:#fff;padding:2.5rem 1.5rem 2rem;position:relative;overflow:hidden;}
-header::after{content:'';position:absolute;top:-60px;right:-60px;width:260px;height:260px;border-radius:50%;background:rgba(255,255,255,.04);}
-header::before{content:'';position:absolute;bottom:-80px;left:40px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.03);}
+header::after{content:'';position:absolute;top:-60px;right:-60px;width:240px;height:240px;border-radius:50%;background:rgba(255,255,255,.04);}
 .hinner{max-width:780px;margin:0 auto;position:relative;}
 header h1{font-family:'DM Serif Display',serif;font-size:clamp(1.9rem,5vw,2.9rem);font-weight:400;letter-spacing:-.5px;margin-bottom:.3rem;}
 header p{font-size:.9rem;color:rgba(255,255,255,.5);margin-bottom:1rem;}
 .chips{display:flex;gap:8px;flex-wrap:wrap;}
 .chip{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:999px;padding:4px 12px;font-size:.78rem;color:rgba(255,255,255,.75);}
-.dot{width:6px;height:6px;border-radius:50%;background:#4ade80;animation:blink 2s infinite;}
+.dot{width:6px;height:6px;border-radius:50%;background:#4ade80;animation:blink 2s infinite;flex-shrink:0;}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-.sync-dot{width:6px;height:6px;border-radius:50%;background:#facc15;}
-.sync-dot.ok{background:#4ade80;}
-
+.sdot{width:6px;height:6px;border-radius:50%;background:#facc15;flex-shrink:0;}
+.sdot.ok{background:#4ade80;}
 main{max-width:780px;margin:0 auto;padding:1.75rem 1rem 4rem;}
-
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1.75rem;}
 .stat{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:.9rem 1.1rem;}
 .slabel{font-size:.7rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.25rem;}
 .sval{font-size:1.9rem;font-weight:500;line-height:1;}
-
 .dates-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:1.5rem;overflow:hidden;}
 .dates-head{display:flex;align-items:center;justify-content:space-between;padding:.8rem 1.25rem;border-bottom:1px solid var(--border);cursor:pointer;user-select:none;}
 .dates-head:hover{background:#fafaf8;}
@@ -49,11 +35,9 @@ main{max-width:780px;margin:0 auto;padding:1.75rem 1rem 4rem;}
 .dchev.open{transform:rotate(180deg);}
 .date-row{display:flex;align-items:center;gap:12px;padding:.7rem 1.25rem;border-bottom:1px solid var(--border);font-size:.88rem;}
 .date-row:last-child{border-bottom:none;}
-.date-chip{font-size:.72rem;font-weight:500;background:var(--blue-lt);color:var(--blue-dk);border-radius:6px;padding:3px 9px;min-width:58px;text-align:center;white-space:nowrap;}
-.date-chip.movein{background:#D1FAE5;color:#065F46;}
-
+.dchip{font-size:.72rem;font-weight:500;background:#EBF5FB;color:#1a5276;border-radius:6px;padding:3px 9px;min-width:58px;text-align:center;white-space:nowrap;}
+.dchip.movein{background:#D1FAE5;color:#065F46;}
 .sec-label{font-size:.72rem;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.75rem;}
-
 .phase{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:.9rem;overflow:hidden;}
 .phase-head{display:flex;align-items:center;gap:9px;padding:.8rem 1.2rem;cursor:pointer;user-select:none;transition:background .12s;}
 .phase-head:hover{background:#fafaf8;}
@@ -65,107 +49,105 @@ main{max-width:780px;margin:0 auto;padding:1.75rem 1rem 4rem;}
 .pchev.open{transform:rotate(180deg);}
 .pbar-wrap{height:3px;background:#f0efeb;}
 .pbar{height:3px;transition:width .35s ease;}
-
 .task-list{border-top:1px solid var(--border);}
 .task{display:flex;align-items:center;gap:9px;padding:.65rem 1.2rem;border-bottom:1px solid var(--border);cursor:grab;transition:background .1s;}
 .task:last-child{border-bottom:none;}
 .task:hover{background:#fafaf8;}
 .task.dragging{opacity:.3;cursor:grabbing;}
-.task.dragover{background:var(--blue-lt);}
+.task.dragover{background:#EBF5FB;}
 .dhandle{color:#ddd;font-size:.85rem;flex-shrink:0;line-height:1;}
 .task:hover .dhandle{color:#bbb;}
 .cb{width:18px;height:18px;border-radius:5px;border:1.5px solid #d1d5db;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s;cursor:pointer;background:#fff;}
 .task.done .cb{background:#16a34a;border-color:#16a34a;}
-.cb svg{opacity:0;transition:opacity .15s;}
+.cb svg{opacity:0;}
 .task.done .cb svg{opacity:1;}
 .tbody{flex:1;min-width:0;}
 .tname{font-size:.86rem;color:var(--text);line-height:1.4;}
 .task.done .tname{text-decoration:line-through;color:#9ca3af;}
 .tdetail{font-size:.75rem;color:var(--muted);margin-top:1px;line-height:1.4;}
 .task.done .tdetail{color:#c4c9d1;}
-.pbadge{font-size:.66rem;font-weight:500;padding:2px 8px;border-radius:999px;cursor:pointer;flex-shrink:0;transition:opacity .15s;white-space:nowrap;}
+.task-actions{display:flex;align-items:center;gap:3px;flex-shrink:0;}
+.pbadge{font-size:.66rem;font-weight:500;padding:2px 8px;border-radius:999px;cursor:pointer;transition:opacity .15s;white-space:nowrap;}
 .pbadge:hover{opacity:.7;}
 .ph{background:#FEE2E2;color:#991B1B;}
 .pm{background:#FEF3C7;color:#92400E;}
 .pl{background:#D1FAE5;color:#065F46;}
-
-.edit-btn{font-size:.7rem;color:var(--muted);background:none;border:none;cursor:pointer;padding:2px 6px;border-radius:4px;margin-left:4px;}
-.edit-btn:hover{background:var(--border);color:var(--text);}
-
+.icon-btn{background:none;border:none;cursor:pointer;padding:3px 6px;border-radius:5px;color:#ccc;font-size:.8rem;line-height:1;transition:all .15s;}
+.icon-btn:hover{background:var(--border);color:var(--text);}
+.icon-btn.del:hover{background:#FEE2E2;color:#991B1B;}
+.add-row{display:flex;align-items:center;gap:8px;padding:.6rem 1.2rem;border-top:1px solid var(--border);background:#fafaf8;}
+.add-inp{flex:1;border:none;background:none;font-size:.86rem;font-family:inherit;color:var(--text);outline:none;padding:4px 0;}
+.add-inp::placeholder{color:#d1d5db;}
+.add-btn{font-size:.75rem;font-weight:500;padding:4px 12px;border-radius:8px;border:1px solid var(--border);background:#fff;color:var(--muted);cursor:pointer;white-space:nowrap;transition:all .15s;}
+.add-btn:hover{background:var(--text);color:#fff;border-color:var(--text);}
 .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;align-items:center;justify-content:center;}
 .modal-bg.show{display:flex;}
-.modal{background:#fff;border-radius:var(--radius);padding:1.5rem;width:90%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,.2);}
+.modal{background:#fff;border-radius:var(--radius);padding:1.5rem;width:90%;max-width:420px;}
 .modal h3{font-size:1rem;font-weight:500;margin-bottom:1rem;}
-.modal label{font-size:.78rem;color:var(--muted);display:block;margin-bottom:.25rem;}
-.modal input,.modal textarea{width:100%;border:1px solid var(--border);border-radius:8px;padding:.55rem .75rem;font-size:.88rem;font-family:inherit;margin-bottom:.9rem;outline:none;}
-.modal input:focus,.modal textarea:focus{border-color:#93c5fd;}
-.modal textarea{resize:vertical;min-height:60px;}
-.modal-actions{display:flex;gap:8px;justify-content:flex-end;}
-.btn{padding:.5rem 1.1rem;border-radius:8px;font-size:.84rem;font-family:inherit;cursor:pointer;border:1px solid var(--border);background:#fff;color:var(--text);transition:background .12s;}
+.modal label{font-size:.78rem;color:var(--muted);display:block;margin-bottom:.3rem;margin-top:.75rem;}
+.modal label:first-of-type{margin-top:0;}
+.modal input,.modal textarea,.modal select{width:100%;border:1px solid var(--border);border-radius:8px;padding:.55rem .75rem;font-size:.88rem;font-family:inherit;outline:none;color:var(--text);background:#fff;}
+.modal input:focus,.modal textarea:focus,.modal select:focus{border-color:#93c5fd;}
+.modal textarea{resize:vertical;min-height:56px;}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:1.1rem;}
+.btn{padding:.5rem 1.1rem;border-radius:8px;font-size:.84rem;font-family:inherit;cursor:pointer;border:1px solid var(--border);background:#fff;color:var(--text);}
 .btn:hover{background:var(--bg);}
 .btn.primary{background:var(--text);color:#fff;border-color:var(--text);}
 .btn.primary:hover{background:#2d2d40;}
-
-.saving{font-size:.72rem;color:var(--muted);text-align:center;padding:.5rem;display:none;}
+.btn.danger{background:#FEE2E2;color:#991B1B;border-color:#fca5a5;}
+.btn.danger:hover{background:#fca5a5;}
+.saving{font-size:.72rem;color:var(--muted);text-align:center;padding:.4rem;display:none;}
 .saving.show{display:block;}
-
 footer{text-align:center;font-size:.75rem;color:var(--muted);padding:1.5rem 1rem 3rem;}
-
-@media(max-width:480px){
-  .pdates{display:none;}
-  .sval{font-size:1.5rem;}
-}
+@media(max-width:480px){.pdates{display:none;}.sval{font-size:1.5rem;}}
 </style>
 </head>
 <body>
-
 <header>
   <div class="hinner">
     <h1>Fran's Move-In Plan</h1>
     <p>Preparing the home together — July 1, 2026</p>
     <div class="chips">
       <div class="chip"><span class="dot"></span><span id="countdown">Loading...</span></div>
-      <div class="chip"><span class="sync-dot" id="sync-dot"></span><span id="sync-status">Connecting...</span></div>
+      <div class="chip"><span class="sdot" id="sdot"></span><span id="sstatus">Connecting...</span></div>
     </div>
   </div>
 </header>
-
 <main>
   <div class="stats">
     <div class="stat"><div class="slabel">Total</div><div class="sval" id="s-total">—</div></div>
     <div class="stat"><div class="slabel">Done</div><div class="sval" id="s-done">—</div></div>
     <div class="stat"><div class="slabel">Progress</div><div class="sval" id="s-pct">—</div></div>
   </div>
-
   <div class="dates-card">
     <div class="dates-head" id="dates-toggle">
       <span>Key dates</span>
       <span class="dchev open" id="dchev">▼</span>
     </div>
     <div id="dates-body">
-      <div class="date-row"><span class="date-chip">Apr 25</span><span>Visit Fran — discuss move plans &amp; choose paint colors</span></div>
-      <div class="date-row"><span class="date-chip">May 1</span><span>Phase 1 deadline: planning &amp; decluttering complete</span></div>
-      <div class="date-row"><span class="date-chip">May 2</span><span>Nephews painting — outside confirmed, inside TBD</span></div>
-      <div class="date-row"><span class="date-chip">May 31</span><span>Phase 2 deadline: structural improvements complete</span></div>
-      <div class="date-row"><span class="date-chip">Jun 15</span><span>Phase 3 deadline: moving &amp; logistics complete</span></div>
-      <div class="date-row"><span class="date-chip movein">Jul 1</span><span style="font-weight:500">Move-in day — Fran moves in!</span></div>
+      <div class="date-row"><span class="dchip">Apr 25</span><span>Visit Fran — discuss move plans &amp; choose paint colors</span></div>
+      <div class="date-row"><span class="dchip">May 1</span><span>Phase 1 deadline: planning &amp; decluttering complete</span></div>
+      <div class="date-row"><span class="dchip">May 2</span><span>Nephews painting — outside confirmed, inside TBD</span></div>
+      <div class="date-row"><span class="dchip">May 31</span><span>Phase 2 deadline: structural improvements complete</span></div>
+      <div class="date-row"><span class="dchip">Jun 15</span><span>Phase 3 deadline: moving &amp; logistics complete</span></div>
+      <div class="date-row"><span class="dchip movein">Jul 1</span><span style="font-weight:500">Move-in day — Fran moves in!</span></div>
     </div>
   </div>
-
-  <p class="sec-label">Task checklist — tap to complete, drag to reorder, tap badge to change priority</p>
+  <p class="sec-label">Tap to complete · drag to reorder · ✎ edit · ✕ delete · type below a phase to add</p>
   <div id="phases-root"></div>
   <p class="saving" id="saving-msg">Saving...</p>
 </main>
-
-<footer>Shared between Cory &amp; wife · Updates sync in real time · Move-in July 1, 2026</footer>
+<footer>Shared between Cory &amp; wife · Syncs every 8 seconds · Move-in July 1, 2026</footer>
 
 <div class="modal-bg" id="edit-modal">
   <div class="modal">
-    <h3 id="modal-title">Edit task</h3>
+    <h3>Edit task</h3>
     <label>Task name</label>
     <input type="text" id="edit-name" />
     <label>Details</label>
-    <textarea id="edit-detail"></textarea>
+    <textarea id="edit-detail" rows="2"></textarea>
+    <label>Move to phase</label>
+    <select id="edit-phase"></select>
     <div class="modal-actions">
       <button class="btn" id="modal-cancel">Cancel</button>
       <button class="btn primary" id="modal-save">Save</button>
@@ -173,21 +155,29 @@ footer{text-align:center;font-size:.75rem;color:var(--muted);padding:1.5rem 1rem
   </div>
 </div>
 
-<script>
-const STORAGE_KEY = 'fran_movein_v2';
-const POLL_INTERVAL = 8000;
+<div class="modal-bg" id="confirm-modal">
+  <div class="modal">
+    <h3>Delete this task?</h3>
+    <p style="font-size:.88rem;color:var(--muted);margin-top:.4rem;" id="confirm-msg"></p>
+    <div class="modal-actions">
+      <button class="btn" id="confirm-cancel">Cancel</button>
+      <button class="btn danger" id="confirm-ok">Delete</button>
+    </div>
+  </div>
+</div>
 
-const DEFAULT_PHASES = [
-  {id:"p1",label:"Phase 1",title:"Planning & Decluttering",dates:"Now – May 1",pill:"#EBF5FB",pillText:"#1a5276",bar:"#2980B9",
-   tasks:[
+<script>
+const STORAGE_KEY='fran_movein_v3';
+const POLL_MS=8000;
+const DEFAULT_PHASES=[
+  {id:"p1",label:"Phase 1",title:"Planning & Decluttering",dates:"Now – May 1",pill:"#EBF5FB",pillText:"#1a5276",bar:"#2980B9",tasks:[
     {id:"t1",name:"Clean out both closets",detail:"Sort into keep, donate, trash — free up space for Fran's belongings.",prio:"high"},
     {id:"t2",name:"Empty hall closet",detail:"Clear for general storage or extra linens.",prio:"high"},
     {id:"t3",name:"Relocate hat supplies",detail:"Move to long-term or alternate storage area.",prio:"med"},
     {id:"t4",name:"Clean out garage shelves",detail:"Clear shelves to create space for storage tubs.",prio:"med"},
     {id:"t5",name:"Get small storage unit & tubs",detail:"Purchase plastic tubs; use unit for overflow items.",prio:"low"},
   ]},
-  {id:"p2",label:"Phase 2",title:"Structural Improvements",dates:"May 1 – May 31",pill:"#EAFAF1",pillText:"#1e8449",bar:"#27AE60",
-   tasks:[
+  {id:"p2",label:"Phase 2",title:"Structural Improvements",dates:"May 1 – May 31",pill:"#EAFAF1",pillText:"#1e8449",bar:"#27AE60",tasks:[
     {id:"t6",name:"Replace carpet in both bedrooms",detail:"Schedule professionals before furniture moves in.",prio:"high"},
     {id:"t7",name:"Paint rooms — Fran's choice of color",detail:"Paint while rooms are empty. Colors chosen on April 25 visit.",prio:"high"},
     {id:"t8",name:"Nephews painting — May 2",detail:"Outside confirmed. Inside TBD — confirm with nephews by April 29.",prio:"high"},
@@ -195,227 +185,179 @@ const DEFAULT_PHASES = [
     {id:"t10",name:"Install taller toilet",detail:"Comfort and accessibility improvement for Fran.",prio:"high"},
     {id:"t11",name:"Order adjustable bed",detail:"Order and arrange delivery ahead of move-in.",prio:"med"},
   ]},
-  {id:"p3",label:"Phase 3",title:"Moving & Logistics",dates:"Jun 1 – Jun 15",pill:"#FEF9E7",pillText:"#7d6608",bar:"#D68910",
-   tasks:[
+  {id:"p3",label:"Phase 3",title:"Moving & Logistics",dates:"Jun 1 – Jun 15",pill:"#FEF9E7",pillText:"#7d6608",bar:"#D68910",tasks:[
     {id:"t12",name:"Move drums upstairs",detail:"Clear downstairs area and relocate drums to new spot.",prio:"high"},
     {id:"t13",name:"New car — trade in Volvo",detail:"Research options, get Volvo appraisal, finalize trade-in by late June.",prio:"med"},
   ]},
-  {id:"p4",label:"Phase 4",title:"Final Preparation & Move-In",dates:"Jun 15 – Jul 1",pill:"#FDEDEC",pillText:"#922b21",bar:"#C0392B",
-   tasks:[
+  {id:"p4",label:"Phase 4",title:"Final Preparation & Move-In",dates:"Jun 15 – Jul 1",pill:"#FDEDEC",pillText:"#922b21",bar:"#C0392B",tasks:[
     {id:"t14",name:"Final deep clean",detail:"Deep clean newly painted rooms and installed carpets.",prio:"high"},
     {id:"t15",name:"Move-in day — July 1",detail:"Assemble furniture and organize Fran's personal items.",prio:"high"},
     {id:"t16",name:"Confirm all logistics complete",detail:"Verify car, storage, toilet, bed, and accessibility items are in order.",prio:"med"},
   ]},
 ];
 
-let state = {
-  checked: [],
-  collapsed: [],
-  phases: JSON.parse(JSON.stringify(DEFAULT_PHASES)),
-  prioMap: {},
-};
+let state={checked:[],collapsed:[],phases:JSON.parse(JSON.stringify(DEFAULT_PHASES)),prioMap:{}};
+let lastHash='',saveTimer=null,dragSrc=null,dragPhaseId=null,editTarget=null,deleteTarget=null;
 
-let lastSavedHash = '';
-let saveTimer = null;
-let dragSrc = null, dragPhaseId = null;
-let editTarget = null;
+function uid(){return 't'+Date.now()+Math.random().toString(36).slice(2,5);}
 
-async function apiCall(action, data) {
-  const resp = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 1000,
-      system: `You are a key-value store. Respond ONLY with valid JSON, no markdown.
-For action "get": return {"value": <stored_value_or_null>}
-For action "set": store the value and return {"ok": true}`,
-      messages: [{
-        role: 'user',
-        content: JSON.stringify({ action, key: STORAGE_KEY, value: data })
-      }]
-    })
-  });
-  const json = await resp.json();
-  const text = json.content?.find(b => b.type === 'text')?.text || '{}';
-  try { return JSON.parse(text.replace(/```json|```/g, '').trim()); }
-  catch(e) { return {}; }
+async function apiCall(action,data){
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,
+        system:`You are a key-value store. Respond ONLY with valid JSON, no markdown.
+For action "get": return {"value":<stored_value_or_null>}
+For action "set": store the value and return {"ok":true}`,
+        messages:[{role:'user',content:JSON.stringify({action,key:STORAGE_KEY,value:data})}]})
+    });
+    const j=await r.json();
+    const txt=j.content?.find(b=>b.type==='text')?.text||'{}';
+    return JSON.parse(txt.replace(/```json|```/g,'').trim());
+  }catch(e){return {};}
 }
 
-async function loadFromCloud() {
-  try {
-    const result = await apiCall('get');
-    if (result.value && typeof result.value === 'object') {
-      state = {
-        checked: result.value.checked || [],
-        collapsed: result.value.collapsed || [],
-        phases: result.value.phases || JSON.parse(JSON.stringify(DEFAULT_PHASES)),
-        prioMap: result.value.prioMap || {},
-      };
-    }
-    setSynced(true);
-  } catch(e) {
-    setSynced(false);
+async function loadCloud(){
+  const res=await apiCall('get');
+  if(res.value&&typeof res.value==='object'){
+    state={checked:res.value.checked||[],collapsed:res.value.collapsed||[],
+      phases:res.value.phases||JSON.parse(JSON.stringify(DEFAULT_PHASES)),prioMap:res.value.prioMap||{}};
   }
+  setSynced(true);
 }
 
-async function saveToCloud() {
-  const hash = JSON.stringify(state);
-  if (hash === lastSavedHash) return;
+async function saveCloud(){
+  const h=JSON.stringify(state);
+  if(h===lastHash)return;
   showSaving(true);
-  try {
-    await apiCall('set', state);
-    lastSavedHash = hash;
-    setSynced(true);
-  } catch(e) {
-    setSynced(false);
-  }
+  const res=await apiCall('set',state);
+  if(res.ok){lastHash=h;setSynced(true);}else setSynced(false);
   showSaving(false);
 }
 
-function setSynced(ok) {
-  document.getElementById('sync-dot').className = 'sync-dot' + (ok ? ' ok' : '');
-  document.getElementById('sync-status').textContent = ok ? 'Synced' : 'Offline';
+function setSynced(ok){
+  document.getElementById('sdot').className='sdot'+(ok?' ok':'');
+  document.getElementById('sstatus').textContent=ok?'Synced':'Offline';
+}
+function showSaving(v){document.getElementById('saving-msg').className='saving'+(v?' show':'');}
+function scheduleSave(){clearTimeout(saveTimer);saveTimer=setTimeout(saveCloud,800);}
+function cyclePrio(p){return p==='high'?'med':p==='med'?'low':'high';}
+function prioLabel(p){return p==='high'?'High':p==='med'?'Med':'Low';}
+function prioClass(p){return 'pbadge '+(p==='high'?'ph':p==='med'?'pm':'pl');}
+
+function updateStats(){
+  let total=0,done=0;
+  state.phases.forEach(ph=>ph.tasks.forEach(t=>{total++;if(state.checked.includes(t.id))done++;}));
+  document.getElementById('s-total').textContent=total;
+  document.getElementById('s-done').textContent=done;
+  document.getElementById('s-pct').textContent=total?Math.round(done/total*100)+'%':'0%';
 }
 
-function showSaving(show) {
-  const el = document.getElementById('saving-msg');
-  el.className = 'saving' + (show ? ' show' : '');
+function updateCountdown(){
+  const days=Math.ceil((new Date('2026-07-01')-new Date())/86400000);
+  document.getElementById('countdown').textContent=days>0?days+' days until move-in':days===0?'Move-in day!':'Fran has moved in!';
 }
 
-function scheduleSave() {
-  clearTimeout(saveTimer);
-  saveTimer = setTimeout(saveToCloud, 800);
-}
+function render(){
+  const root=document.getElementById('phases-root');
+  root.innerHTML='';
+  const collSet=new Set(state.collapsed);
+  const chkSet=new Set(state.checked);
 
-function cyclePrio(p) { return p==='high'?'med':p==='med'?'low':'high'; }
-function prioLabel(p) { return p==='high'?'High':p==='med'?'Med':'Low'; }
-function prioClass(p) { return 'pbadge '+(p==='high'?'ph':p==='med'?'pm':'pl'); }
+  state.phases.forEach(ph=>{
+    const total=ph.tasks.length;
+    const done=ph.tasks.filter(t=>chkSet.has(t.id)).length;
+    const pct=total?Math.round(done/total*100):0;
+    const isOpen=!collSet.has(ph.id);
+    const wrap=document.createElement('div');
+    wrap.className='phase';
 
-function updateStats() {
-  let total = 0, done = 0;
-  state.phases.forEach(ph => ph.tasks.forEach(t => {
-    total++;
-    if (state.checked.includes(t.id)) done++;
-  }));
-  document.getElementById('s-total').textContent = total;
-  document.getElementById('s-done').textContent = done;
-  document.getElementById('s-pct').textContent = total ? Math.round(done/total*100)+'%' : '0%';
-}
-
-function updateCountdown() {
-  const days = Math.ceil((new Date('2026-07-01') - new Date()) / 86400000);
-  const el = document.getElementById('countdown');
-  el.textContent = days > 0 ? days+' days until move-in' : days===0 ? 'Move-in day!' : 'Fran has moved in!';
-}
-
-function render() {
-  const root = document.getElementById('phases-root');
-  root.innerHTML = '';
-  const collapsedSet = new Set(state.collapsed);
-  const checkedSet = new Set(state.checked);
-
-  state.phases.forEach(ph => {
-    const total = ph.tasks.length;
-    const done = ph.tasks.filter(t => checkedSet.has(t.id)).length;
-    const pct = total ? Math.round(done/total*100) : 0;
-    const isOpen = !collapsedSet.has(ph.id);
-
-    const wrap = document.createElement('div');
-    wrap.className = 'phase';
-
-    const head = document.createElement('div');
-    head.className = 'phase-head';
-    head.innerHTML = `
-      <span class="ppill" style="background:${ph.pill};color:${ph.pillText}">${ph.label}</span>
-      <span class="ptitle">${ph.title}</span>
-      <span class="pdates">${ph.dates}</span>
-      <span class="pcount">${done}/${total}</span>
-      <span class="pchev ${isOpen?'open':''}">▼</span>
-    `;
-    head.addEventListener('click', () => {
-      const idx = state.collapsed.indexOf(ph.id);
-      if (idx > -1) state.collapsed.splice(idx, 1);
-      else state.collapsed.push(ph.id);
-      render(); updateStats(); scheduleSave();
+    const head=document.createElement('div');
+    head.className='phase-head';
+    head.innerHTML=`<span class="ppill" style="background:${ph.pill};color:${ph.pillText}">${ph.label}</span><span class="ptitle">${ph.title}</span><span class="pdates">${ph.dates}</span><span class="pcount">${done}/${total}</span><span class="pchev ${isOpen?'open':''}">▼</span>`;
+    head.addEventListener('click',()=>{
+      const i=state.collapsed.indexOf(ph.id);
+      if(i>-1)state.collapsed.splice(i,1);else state.collapsed.push(ph.id);
+      render();updateStats();scheduleSave();
     });
     wrap.appendChild(head);
 
-    const pbarWrap = document.createElement('div');
-    pbarWrap.className = 'pbar-wrap';
-    pbarWrap.innerHTML = `<div class="pbar" style="width:${pct}%;background:${ph.bar}"></div>`;
-    wrap.appendChild(pbarWrap);
+    const pbw=document.createElement('div');
+    pbw.className='pbar-wrap';
+    pbw.innerHTML=`<div class="pbar" style="width:${pct}%;background:${ph.bar}"></div>`;
+    wrap.appendChild(pbw);
 
-    if (isOpen) {
-      const tl = document.createElement('div');
-      tl.className = 'task-list';
+    if(isOpen){
+      const tl=document.createElement('div');
+      tl.className='task-list';
 
-      ph.tasks.forEach((t, idx) => {
-        const isDone = checkedSet.has(t.id);
-        const curPrio = state.prioMap[t.id] || t.prio;
-
-        const row = document.createElement('div');
-        row.className = 'task'+(isDone?' done':'');
-        row.draggable = true;
-        row.innerHTML = `
+      ph.tasks.forEach((t,idx)=>{
+        const isDone=chkSet.has(t.id);
+        const curPrio=state.prioMap[t.id]||t.prio;
+        const row=document.createElement('div');
+        row.className='task'+(isDone?' done':'');
+        row.draggable=true;
+        row.innerHTML=`
           <span class="dhandle">⠿</span>
-          <div class="cb">
-            <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-              <path d="M1.5 5l2.5 2.5 4.5-5" stroke="white" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
-          <div class="tbody">
-            <div class="tname">${t.name} <button class="edit-btn" data-pid="${ph.id}" data-idx="${idx}" title="Edit">✎</button></div>
-            <div class="tdetail">${t.detail}</div>
-          </div>
-          <span class="${prioClass(curPrio)}" data-pid="${ph.id}" data-idx="${idx}">${prioLabel(curPrio)}</span>
-        `;
+          <div class="cb"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5 4.5-5" stroke="white" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div class="tbody"><div class="tname">${t.name}</div><div class="tdetail">${t.detail||''}</div></div>
+          <div class="task-actions">
+            <span class="${prioClass(curPrio)}">${prioLabel(curPrio)}</span>
+            <button class="icon-btn edit-btn" title="Edit">✎</button>
+            <button class="icon-btn del delete-btn" title="Delete">✕</button>
+          </div>`;
 
-        row.querySelector('.cb').addEventListener('click', e => {
+        row.querySelector('.cb').addEventListener('click',e=>{
           e.stopPropagation();
-          const ci = state.checked.indexOf(t.id);
-          if (ci > -1) state.checked.splice(ci, 1);
-          else state.checked.push(t.id);
-          render(); updateStats(); scheduleSave();
+          const ci=state.checked.indexOf(t.id);
+          if(ci>-1)state.checked.splice(ci,1);else state.checked.push(t.id);
+          render();updateStats();scheduleSave();
         });
-
-        row.querySelector('.pbadge').addEventListener('click', e => {
+        row.querySelector('.pbadge').addEventListener('click',e=>{
           e.stopPropagation();
-          state.prioMap[t.id] = cyclePrio(state.prioMap[t.id] || t.prio);
-          render(); scheduleSave();
+          state.prioMap[t.id]=cyclePrio(state.prioMap[t.id]||t.prio);
+          render();scheduleSave();
         });
-
-        row.querySelector('.edit-btn').addEventListener('click', e => {
+        row.querySelector('.edit-btn').addEventListener('click',e=>{
           e.stopPropagation();
-          editTarget = { phaseId: ph.id, idx };
-          document.getElementById('modal-title').textContent = 'Edit task';
-          document.getElementById('edit-name').value = t.name;
-          document.getElementById('edit-detail').value = t.detail;
+          editTarget={phaseId:ph.id,idx};
+          document.getElementById('edit-name').value=t.name;
+          document.getElementById('edit-detail').value=t.detail||'';
+          const sel=document.getElementById('edit-phase');
+          sel.innerHTML=state.phases.map(p=>`<option value="${p.id}"${p.id===ph.id?' selected':''}>${p.label}: ${p.title}</option>`).join('');
           document.getElementById('edit-modal').classList.add('show');
         });
-
-        row.addEventListener('dragstart', e => {
-          dragSrc = idx; dragPhaseId = ph.id;
-          setTimeout(() => row.classList.add('dragging'), 0);
-          e.dataTransfer.effectAllowed = 'move';
+        row.querySelector('.delete-btn').addEventListener('click',e=>{
+          e.stopPropagation();
+          deleteTarget={phaseId:ph.id,idx,tid:t.id,name:t.name};
+          document.getElementById('confirm-msg').textContent=`"${t.name}" will be permanently removed.`;
+          document.getElementById('confirm-modal').classList.add('show');
         });
-        row.addEventListener('dragend', () => {
-          document.querySelectorAll('.task').forEach(r => r.classList.remove('dragging','dragover'));
+        row.addEventListener('dragstart',e=>{dragSrc=idx;dragPhaseId=ph.id;setTimeout(()=>row.classList.add('dragging'),0);e.dataTransfer.effectAllowed='move';});
+        row.addEventListener('dragend',()=>document.querySelectorAll('.task').forEach(r=>r.classList.remove('dragging','dragover')));
+        row.addEventListener('dragover',e=>{e.preventDefault();row.classList.add('dragover');});
+        row.addEventListener('dragleave',()=>row.classList.remove('dragover'));
+        row.addEventListener('drop',e=>{
+          e.preventDefault();row.classList.remove('dragover');
+          if(dragPhaseId!==ph.id||dragSrc===null||dragSrc===idx)return;
+          const[moved]=ph.tasks.splice(dragSrc,1);ph.tasks.splice(idx,0,moved);
+          dragSrc=null;render();updateStats();scheduleSave();
         });
-        row.addEventListener('dragover', e => { e.preventDefault(); row.classList.add('dragover'); });
-        row.addEventListener('dragleave', () => row.classList.remove('dragover'));
-        row.addEventListener('drop', e => {
-          e.preventDefault();
-          row.classList.remove('dragover');
-          if (dragPhaseId !== ph.id || dragSrc === null || dragSrc === idx) return;
-          const [moved] = ph.tasks.splice(dragSrc, 1);
-          ph.tasks.splice(idx, 0, moved);
-          dragSrc = null;
-          render(); updateStats(); scheduleSave();
-        });
-
         tl.appendChild(row);
       });
+
+      const addRow=document.createElement('div');
+      addRow.className='add-row';
+      addRow.innerHTML=`<input class="add-inp" placeholder="Add a task to ${ph.label}..." type="text"/><button class="add-btn">+ Add</button>`;
+      const inp=addRow.querySelector('.add-inp');
+      function doAdd(){
+        const val=inp.value.trim();if(!val)return;
+        ph.tasks.push({id:uid(),name:val,detail:'',prio:'med'});
+        inp.value='';render();updateStats();scheduleSave();
+      }
+      addRow.querySelector('.add-btn').addEventListener('click',doAdd);
+      inp.addEventListener('keydown',e=>{if(e.key==='Enter')doAdd();});
+      tl.appendChild(addRow);
       wrap.appendChild(tl);
     }
     root.appendChild(wrap);
@@ -423,48 +365,45 @@ function render() {
   updateStats();
 }
 
-document.getElementById('dates-toggle').addEventListener('click', () => {
-  const body = document.getElementById('dates-body');
-  const chev = document.getElementById('dchev');
-  const hidden = body.style.display === 'none';
-  body.style.display = hidden ? '' : 'none';
-  chev.classList.toggle('open', hidden);
+document.getElementById('dates-toggle').addEventListener('click',()=>{
+  const b=document.getElementById('dates-body'),c=document.getElementById('dchev');
+  const hidden=b.style.display==='none';
+  b.style.display=hidden?'':'none';c.classList.toggle('open',hidden);
 });
-
-document.getElementById('modal-cancel').addEventListener('click', () => {
-  document.getElementById('edit-modal').classList.remove('show');
-  editTarget = null;
-});
-
-document.getElementById('modal-save').addEventListener('click', () => {
-  if (!editTarget) return;
-  const ph = state.phases.find(p => p.id === editTarget.phaseId);
-  if (!ph) return;
-  ph.tasks[editTarget.idx].name = document.getElementById('edit-name').value.trim();
-  ph.tasks[editTarget.idx].detail = document.getElementById('edit-detail').value.trim();
-  document.getElementById('edit-modal').classList.remove('show');
-  editTarget = null;
-  render(); scheduleSave();
-});
-
-document.getElementById('edit-modal').addEventListener('click', e => {
-  if (e.target === document.getElementById('edit-modal')) {
-    document.getElementById('edit-modal').classList.remove('show');
-    editTarget = null;
+document.getElementById('modal-cancel').addEventListener('click',()=>{document.getElementById('edit-modal').classList.remove('show');editTarget=null;});
+document.getElementById('modal-save').addEventListener('click',()=>{
+  if(!editTarget)return;
+  const name=document.getElementById('edit-name').value.trim();
+  if(!name)return;
+  const newPhId=document.getElementById('edit-phase').value;
+  const oldPh=state.phases.find(p=>p.id===editTarget.phaseId);
+  const task=oldPh.tasks[editTarget.idx];
+  task.name=name;task.detail=document.getElementById('edit-detail').value.trim();
+  if(newPhId!==editTarget.phaseId){
+    oldPh.tasks.splice(editTarget.idx,1);
+    state.phases.find(p=>p.id===newPhId).tasks.push(task);
   }
+  document.getElementById('edit-modal').classList.remove('show');editTarget=null;
+  render();scheduleSave();
 });
+document.getElementById('edit-modal').addEventListener('click',e=>{if(e.target===document.getElementById('edit-modal')){document.getElementById('edit-modal').classList.remove('show');editTarget=null;}});
+document.getElementById('confirm-cancel').addEventListener('click',()=>{document.getElementById('confirm-modal').classList.remove('show');deleteTarget=null;});
+document.getElementById('confirm-ok').addEventListener('click',()=>{
+  if(!deleteTarget)return;
+  const ph=state.phases.find(p=>p.id===deleteTarget.phaseId);
+  ph.tasks.splice(deleteTarget.idx,1);
+  const ci=state.checked.indexOf(deleteTarget.tid);if(ci>-1)state.checked.splice(ci,1);
+  delete state.prioMap[deleteTarget.tid];
+  document.getElementById('confirm-modal').classList.remove('show');deleteTarget=null;
+  render();updateStats();scheduleSave();
+});
+document.getElementById('confirm-modal').addEventListener('click',e=>{if(e.target===document.getElementById('confirm-modal')){document.getElementById('confirm-modal').classList.remove('show');deleteTarget=null;}});
 
-async function init() {
-  updateCountdown();
-  render();
-  await loadFromCloud();
-  render();
-  setInterval(async () => {
-    await loadFromCloud();
-    render();
-  }, POLL_INTERVAL);
+async function init(){
+  updateCountdown();render();
+  await loadCloud();render();
+  setInterval(async()=>{await loadCloud();render();},POLL_MS);
 }
-
 init();
 </script>
 </body>
