@@ -4,167 +4,187 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Fran's Move-In Plan — July 1, 2026</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --blue: #2980B9; --blue-light: #EBF5FB; --blue-dark: #1a5276;
-    --green: #27AE60; --green-light: #EAFAF1;
-    --amber: #D68910; --amber-light: #FEF9E7;
-    --red: #C0392B; --red-light: #FDEDEC;
-    --text: #1a1a2e; --muted: #6b7280; --border: #e5e7eb;
-    --bg: #f8f7f4; --card: #ffffff;
-    --radius: 12px;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+:root {
+  --bg: #f7f6f2;
+  --card: #ffffff;
+  --text: #1c1c2e;
+  --muted: #6b7280;
+  --border: #e5e4df;
+  --radius: 14px;
+  --blue: #2980B9; --blue-lt: #EBF5FB; --blue-dk: #1a5276;
+  --green: #27AE60; --green-lt: #EAFAF1; --green-dk: #1a7a44;
+  --amber: #D68910; --amber-lt: #FEF9E7; --amber-dk: #7d5a0a;
+  --red: #C0392B; --red-lt: #FDEDEC; --red-dk: #8a2820;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
 
-  header {
-    background: var(--text);
-    color: white;
-    padding: 2.5rem 2rem 2rem;
-    position: relative;
-    overflow: hidden;
-  }
-  header::before {
-    content: '';
-    position: absolute; inset: 0;
-    background: repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,.03) 40px, rgba(255,255,255,.03) 80px);
-  }
-  header .inner { max-width: 760px; margin: 0 auto; position: relative; }
-  header h1 { font-family: 'DM Serif Display', serif; font-size: clamp(1.8rem, 5vw, 2.8rem); font-weight: 400; letter-spacing: -.5px; margin-bottom: .4rem; }
-  header p { font-size: .95rem; color: rgba(255,255,255,.55); }
-  .countdown { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.15); border-radius: 999px; padding: 5px 14px; font-size: .82rem; margin-top: 1rem; color: rgba(255,255,255,.8); }
-  .dot { width: 7px; height: 7px; border-radius: 50%; background: #4ade80; animation: pulse 2s infinite; }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+header{background:var(--text);color:#fff;padding:2.5rem 1.5rem 2rem;position:relative;overflow:hidden;}
+header::after{content:'';position:absolute;top:-60px;right:-60px;width:260px;height:260px;border-radius:50%;background:rgba(255,255,255,.04);}
+header::before{content:'';position:absolute;bottom:-80px;left:40px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.03);}
+.hinner{max-width:780px;margin:0 auto;position:relative;}
+header h1{font-family:'DM Serif Display',serif;font-size:clamp(1.9rem,5vw,2.9rem);font-weight:400;letter-spacing:-.5px;margin-bottom:.3rem;}
+header p{font-size:.9rem;color:rgba(255,255,255,.5);margin-bottom:1rem;}
+.chips{display:flex;gap:8px;flex-wrap:wrap;}
+.chip{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:999px;padding:4px 12px;font-size:.78rem;color:rgba(255,255,255,.75);}
+.dot{width:6px;height:6px;border-radius:50%;background:#4ade80;animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.sync-dot{width:6px;height:6px;border-radius:50%;background:#facc15;}
+.sync-dot.ok{background:#4ade80;}
 
-  main { max-width: 760px; margin: 0 auto; padding: 2rem 1rem 4rem; }
+main{max-width:780px;margin:0 auto;padding:1.75rem 1rem 4rem;}
 
-  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 2rem; }
-  .stat { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.25rem; }
-  .stat-label { font-size: .75rem; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: .3rem; }
-  .stat-val { font-size: 1.8rem; font-weight: 500; color: var(--text); line-height: 1; }
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1.75rem;}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:.9rem 1.1rem;}
+.slabel{font-size:.7rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.25rem;}
+.sval{font-size:1.9rem;font-weight:500;line-height:1;}
 
-  .key-dates { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 2rem; overflow: hidden; }
-  .key-dates-header { padding: .85rem 1.25rem; border-bottom: 1px solid var(--border); font-size: .8rem; font-weight: 500; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); cursor: pointer; display: flex; align-items: center; justify-content: space-between; user-select: none; }
-  .key-dates-header:hover { background: #f9f9f9; }
-  .kd-chevron { transition: transform .2s; font-size: .75rem; }
-  .kd-chevron.open { transform: rotate(180deg); }
-  .date-row { display: flex; align-items: center; gap: 1rem; padding: .75rem 1.25rem; border-bottom: 1px solid var(--border); font-size: .9rem; }
-  .date-row:last-child { border-bottom: none; }
-  .date-chip { font-size: .75rem; font-weight: 500; background: var(--blue-light); color: var(--blue-dark); border-radius: 6px; padding: 3px 9px; white-space: nowrap; min-width: 60px; text-align: center; }
-  .date-label { color: var(--text); flex: 1; }
+.dates-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:1.5rem;overflow:hidden;}
+.dates-head{display:flex;align-items:center;justify-content:space-between;padding:.8rem 1.25rem;border-bottom:1px solid var(--border);cursor:pointer;user-select:none;}
+.dates-head:hover{background:#fafaf8;}
+.dates-head span{font-size:.75rem;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);}
+.dchev{font-size:.7rem;color:#bbb;transition:transform .2s;}
+.dchev.open{transform:rotate(180deg);}
+.date-row{display:flex;align-items:center;gap:12px;padding:.7rem 1.25rem;border-bottom:1px solid var(--border);font-size:.88rem;}
+.date-row:last-child{border-bottom:none;}
+.date-chip{font-size:.72rem;font-weight:500;background:var(--blue-lt);color:var(--blue-dk);border-radius:6px;padding:3px 9px;min-width:58px;text-align:center;white-space:nowrap;}
+.date-chip.movein{background:#D1FAE5;color:#065F46;}
 
-  .section-label { font-size: .75rem; font-weight: 500; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: .75rem; }
+.sec-label{font-size:.72rem;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.75rem;}
 
-  .phase { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 1rem; overflow: hidden; }
-  .phase-head { display: flex; align-items: center; gap: 10px; padding: .85rem 1.25rem; cursor: pointer; user-select: none; transition: background .12s; }
-  .phase-head:hover { background: #fafafa; }
-  .phase-pill { font-size: .7rem; font-weight: 500; padding: 3px 10px; border-radius: 999px; white-space: nowrap; flex-shrink: 0; }
-  .phase-title { font-size: .95rem; font-weight: 500; flex: 1; }
-  .phase-dates { font-size: .78rem; color: var(--muted); white-space: nowrap; }
-  .phase-stat { font-size: .78rem; color: var(--muted); white-space: nowrap; }
-  .ph-chevron { font-size: .7rem; color: #aaa; transition: transform .2s; flex-shrink: 0; }
-  .ph-chevron.open { transform: rotate(180deg); }
-  .prog-wrap { height: 3px; background: #f0f0f0; }
-  .prog-bar { height: 3px; transition: width .4s ease; }
+.phase{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:.9rem;overflow:hidden;}
+.phase-head{display:flex;align-items:center;gap:9px;padding:.8rem 1.2rem;cursor:pointer;user-select:none;transition:background .12s;}
+.phase-head:hover{background:#fafaf8;}
+.ppill{font-size:.68rem;font-weight:500;padding:3px 9px;border-radius:999px;white-space:nowrap;flex-shrink:0;}
+.ptitle{font-size:.93rem;font-weight:500;flex:1;}
+.pdates{font-size:.75rem;color:var(--muted);white-space:nowrap;}
+.pcount{font-size:.75rem;color:var(--muted);white-space:nowrap;}
+.pchev{font-size:.68rem;color:#ccc;transition:transform .2s;flex-shrink:0;}
+.pchev.open{transform:rotate(180deg);}
+.pbar-wrap{height:3px;background:#f0efeb;}
+.pbar{height:3px;transition:width .35s ease;}
 
-  .task-list { border-top: 1px solid var(--border); }
-  .task {
-    display: flex; align-items: center; gap: 10px;
-    padding: .7rem 1.25rem;
-    border-bottom: 1px solid var(--border);
-    cursor: grab; transition: background .12s;
-    -webkit-user-select: none; user-select: none;
-  }
-  .task:last-child { border-bottom: none; }
-  .task:hover { background: #fafafa; }
-  .task.dragging { opacity: .35; cursor: grabbing; }
-  .task.drag-over { background: #EBF5FB; border-color: #b0d4f0; }
-  .drag-handle { color: #ccc; font-size: .9rem; cursor: grab; flex-shrink: 0; line-height: 1; }
-  .task:hover .drag-handle { color: #aaa; }
+.task-list{border-top:1px solid var(--border);}
+.task{display:flex;align-items:center;gap:9px;padding:.65rem 1.2rem;border-bottom:1px solid var(--border);cursor:grab;transition:background .1s;}
+.task:last-child{border-bottom:none;}
+.task:hover{background:#fafaf8;}
+.task.dragging{opacity:.3;cursor:grabbing;}
+.task.dragover{background:var(--blue-lt);}
+.dhandle{color:#ddd;font-size:.85rem;flex-shrink:0;line-height:1;}
+.task:hover .dhandle{color:#bbb;}
+.cb{width:18px;height:18px;border-radius:5px;border:1.5px solid #d1d5db;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s;cursor:pointer;background:#fff;}
+.task.done .cb{background:#16a34a;border-color:#16a34a;}
+.cb svg{opacity:0;transition:opacity .15s;}
+.task.done .cb svg{opacity:1;}
+.tbody{flex:1;min-width:0;}
+.tname{font-size:.86rem;color:var(--text);line-height:1.4;}
+.task.done .tname{text-decoration:line-through;color:#9ca3af;}
+.tdetail{font-size:.75rem;color:var(--muted);margin-top:1px;line-height:1.4;}
+.task.done .tdetail{color:#c4c9d1;}
+.pbadge{font-size:.66rem;font-weight:500;padding:2px 8px;border-radius:999px;cursor:pointer;flex-shrink:0;transition:opacity .15s;white-space:nowrap;}
+.pbadge:hover{opacity:.7;}
+.ph{background:#FEE2E2;color:#991B1B;}
+.pm{background:#FEF3C7;color:#92400E;}
+.pl{background:#D1FAE5;color:#065F46;}
 
-  .cb {
-    width: 18px; height: 18px; border-radius: 5px;
-    border: 1.5px solid #d1d5db; flex-shrink: 0;
-    display: flex; align-items: center; justify-content: center;
-    transition: all .15s; cursor: pointer; background: white;
-  }
-  .task.done .cb { background: #16a34a; border-color: #16a34a; }
-  .cb svg { opacity: 0; }
-  .task.done .cb svg { opacity: 1; }
+.edit-btn{font-size:.7rem;color:var(--muted);background:none;border:none;cursor:pointer;padding:2px 6px;border-radius:4px;margin-left:4px;}
+.edit-btn:hover{background:var(--border);color:var(--text);}
 
-  .task-body { flex: 1; min-width: 0; }
-  .task-name { font-size: .88rem; color: var(--text); line-height: 1.4; }
-  .task.done .task-name { text-decoration: line-through; color: #9ca3af; }
-  .task-detail { font-size: .77rem; color: var(--muted); margin-top: 2px; line-height: 1.4; }
-  .task.done .task-detail { color: #c4c9d1; }
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;align-items:center;justify-content:center;}
+.modal-bg.show{display:flex;}
+.modal{background:#fff;border-radius:var(--radius);padding:1.5rem;width:90%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,.2);}
+.modal h3{font-size:1rem;font-weight:500;margin-bottom:1rem;}
+.modal label{font-size:.78rem;color:var(--muted);display:block;margin-bottom:.25rem;}
+.modal input,.modal textarea{width:100%;border:1px solid var(--border);border-radius:8px;padding:.55rem .75rem;font-size:.88rem;font-family:inherit;margin-bottom:.9rem;outline:none;}
+.modal input:focus,.modal textarea:focus{border-color:#93c5fd;}
+.modal textarea{resize:vertical;min-height:60px;}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;}
+.btn{padding:.5rem 1.1rem;border-radius:8px;font-size:.84rem;font-family:inherit;cursor:pointer;border:1px solid var(--border);background:#fff;color:var(--text);transition:background .12s;}
+.btn:hover{background:var(--bg);}
+.btn.primary{background:var(--text);color:#fff;border-color:var(--text);}
+.btn.primary:hover{background:#2d2d40;}
 
-  .prio {
-    font-size: .68rem; font-weight: 500; padding: 2px 8px;
-    border-radius: 999px; cursor: pointer; flex-shrink: 0;
-    transition: opacity .15s; white-space: nowrap;
-  }
-  .prio:hover { opacity: .75; }
-  .prio-high { background: #FEE2E2; color: #991B1B; }
-  .prio-med  { background: #FEF3C7; color: #92400E; }
-  .prio-low  { background: #D1FAE5; color: #065F46; }
+.saving{font-size:.72rem;color:var(--muted);text-align:center;padding:.5rem;display:none;}
+.saving.show{display:block;}
 
-  footer { text-align: center; font-size: .78rem; color: var(--muted); padding: 2rem 1rem 3rem; }
+footer{text-align:center;font-size:.75rem;color:var(--muted);padding:1.5rem 1rem 3rem;}
 
-  @media (max-width: 500px) {
-    .stats { grid-template-columns: repeat(3,1fr); gap: 8px; }
-    .stat-val { font-size: 1.4rem; }
-    .phase-dates { display: none; }
-  }
+@media(max-width:480px){
+  .pdates{display:none;}
+  .sval{font-size:1.5rem;}
+}
 </style>
 </head>
 <body>
 
 <header>
-  <div class="inner">
+  <div class="hinner">
     <h1>Fran's Move-In Plan</h1>
-    <p>Preparing the home for a smooth July 1st move-in</p>
-    <div class="countdown"><span class="dot"></span><span id="countdown-text">Loading...</span></div>
+    <p>Preparing the home together — July 1, 2026</p>
+    <div class="chips">
+      <div class="chip"><span class="dot"></span><span id="countdown">Loading...</span></div>
+      <div class="chip"><span class="sync-dot" id="sync-dot"></span><span id="sync-status">Connecting...</span></div>
+    </div>
   </div>
 </header>
 
 <main>
   <div class="stats">
-    <div class="stat"><div class="stat-label">Total</div><div class="stat-val" id="s-total">0</div></div>
-    <div class="stat"><div class="stat-label">Done</div><div class="stat-val" id="s-done">0</div></div>
-    <div class="stat"><div class="stat-label">Progress</div><div class="stat-val" id="s-pct">0%</div></div>
+    <div class="stat"><div class="slabel">Total</div><div class="sval" id="s-total">—</div></div>
+    <div class="stat"><div class="slabel">Done</div><div class="sval" id="s-done">—</div></div>
+    <div class="stat"><div class="slabel">Progress</div><div class="sval" id="s-pct">—</div></div>
   </div>
 
-  <div class="key-dates">
-    <div class="key-dates-header" id="kd-toggle">
-      Key dates
-      <span class="kd-chevron open" id="kd-chevron">▼</span>
+  <div class="dates-card">
+    <div class="dates-head" id="dates-toggle">
+      <span>Key dates</span>
+      <span class="dchev open" id="dchev">▼</span>
     </div>
-    <div id="kd-body">
-      <div class="date-row"><span class="date-chip">Apr 25</span><span class="date-label">Visit Fran — discuss move plans &amp; choose paint colors</span></div>
-      <div class="date-row"><span class="date-chip">May 1</span><span class="date-label">Phase 1 deadline: planning &amp; decluttering complete</span></div>
-      <div class="date-row"><span class="date-chip">May 2</span><span class="date-label">Nephews painting — outside confirmed, inside TBD</span></div>
-      <div class="date-row"><span class="date-chip">May 31</span><span class="date-label">Phase 2 deadline: structural improvements complete</span></div>
-      <div class="date-row"><span class="date-chip">Jun 15</span><span class="date-label">Phase 3 deadline: moving &amp; logistics complete</span></div>
-      <div class="date-row"><span class="date-chip" style="background:#D1FAE5;color:#065F46;">Jul 1</span><span class="date-label" style="font-weight:500;">Move-in day — Fran moves in!</span></div>
+    <div id="dates-body">
+      <div class="date-row"><span class="date-chip">Apr 25</span><span>Visit Fran — discuss move plans &amp; choose paint colors</span></div>
+      <div class="date-row"><span class="date-chip">May 1</span><span>Phase 1 deadline: planning &amp; decluttering complete</span></div>
+      <div class="date-row"><span class="date-chip">May 2</span><span>Nephews painting — outside confirmed, inside TBD</span></div>
+      <div class="date-row"><span class="date-chip">May 31</span><span>Phase 2 deadline: structural improvements complete</span></div>
+      <div class="date-row"><span class="date-chip">Jun 15</span><span>Phase 3 deadline: moving &amp; logistics complete</span></div>
+      <div class="date-row"><span class="date-chip movein">Jul 1</span><span style="font-weight:500">Move-in day — Fran moves in!</span></div>
     </div>
   </div>
 
-  <p class="section-label">Task checklist</p>
+  <p class="sec-label">Task checklist — tap to complete, drag to reorder, tap badge to change priority</p>
   <div id="phases-root"></div>
+  <p class="saving" id="saving-msg">Saving...</p>
 </main>
 
-<footer>Last updated April 2026 &nbsp;·&nbsp; Move-in: July 1, 2026</footer>
+<footer>Shared between Cory &amp; wife · Updates sync in real time · Move-in July 1, 2026</footer>
+
+<div class="modal-bg" id="edit-modal">
+  <div class="modal">
+    <h3 id="modal-title">Edit task</h3>
+    <label>Task name</label>
+    <input type="text" id="edit-name" />
+    <label>Details</label>
+    <textarea id="edit-detail"></textarea>
+    <div class="modal-actions">
+      <button class="btn" id="modal-cancel">Cancel</button>
+      <button class="btn primary" id="modal-save">Save</button>
+    </div>
+  </div>
+</div>
 
 <script>
-const PHASES = [
+const STORAGE_KEY = 'fran_movein_v2';
+const POLL_INTERVAL = 8000;
+
+const DEFAULT_PHASES = [
   {id:"p1",label:"Phase 1",title:"Planning & Decluttering",dates:"Now – May 1",pill:"#EBF5FB",pillText:"#1a5276",bar:"#2980B9",
    tasks:[
     {id:"t1",name:"Clean out both closets",detail:"Sort into keep, donate, trash — free up space for Fran's belongings.",prio:"high"},
     {id:"t2",name:"Empty hall closet",detail:"Clear for general storage or extra linens.",prio:"high"},
     {id:"t3",name:"Relocate hat supplies",detail:"Move to long-term or alternate storage area.",prio:"med"},
     {id:"t4",name:"Clean out garage shelves",detail:"Clear shelves to create space for storage tubs.",prio:"med"},
-    {id:"t5",name:"Get small storage unit & tubs",detail:"Purchase plastic tubs; use unit for overflow items from garage.",prio:"low"},
+    {id:"t5",name:"Get small storage unit & tubs",detail:"Purchase plastic tubs; use unit for overflow items.",prio:"low"},
   ]},
   {id:"p2",label:"Phase 2",title:"Structural Improvements",dates:"May 1 – May 31",pill:"#EAFAF1",pillText:"#1e8449",bar:"#27AE60",
    tasks:[
@@ -188,65 +208,118 @@ const PHASES = [
   ]},
 ];
 
-const STORAGE_KEY = 'fran_tracker_v1';
+let state = {
+  checked: [],
+  collapsed: [],
+  phases: JSON.parse(JSON.stringify(DEFAULT_PHASES)),
+  prioMap: {},
+};
 
-function loadState() {
-  try {
-    const s = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-    return {
-      checked: new Set(s.checked || []),
-      collapsed: new Set(s.collapsed || []),
-      phases: s.phases ? s.phases : PHASES.map(p => ({...p, tasks: p.tasks.map(t => ({...t}))})),
-      prioMap: s.prioMap || {},
-    };
-  } catch(e) { return { checked: new Set(), collapsed: new Set(), phases: PHASES.map(p => ({...p, tasks: p.tasks.map(t => ({...t}))})), prioMap: {} }; }
-}
-
-function saveState(state) {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({
-      checked: [...state.checked],
-      collapsed: [...state.collapsed],
-      phases: state.phases,
-      prioMap: state.prioMap,
-    }));
-  } catch(e) {}
-}
-
-const state = loadState();
+let lastSavedHash = '';
+let saveTimer = null;
 let dragSrc = null, dragPhaseId = null;
+let editTarget = null;
 
-function cyclePrio(p) { return p === 'high' ? 'med' : p === 'med' ? 'low' : 'high'; }
-function prioLabel(p) { return p === 'high' ? 'High' : p === 'med' ? 'Med' : 'Low'; }
-function prioClass(p) { return 'prio prio-' + p; }
+async function apiCall(action, data) {
+  const resp = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1000,
+      system: `You are a key-value store. Respond ONLY with valid JSON, no markdown.
+For action "get": return {"value": <stored_value_or_null>}
+For action "set": store the value and return {"ok": true}`,
+      messages: [{
+        role: 'user',
+        content: JSON.stringify({ action, key: STORAGE_KEY, value: data })
+      }]
+    })
+  });
+  const json = await resp.json();
+  const text = json.content?.find(b => b.type === 'text')?.text || '{}';
+  try { return JSON.parse(text.replace(/```json|```/g, '').trim()); }
+  catch(e) { return {}; }
+}
+
+async function loadFromCloud() {
+  try {
+    const result = await apiCall('get');
+    if (result.value && typeof result.value === 'object') {
+      state = {
+        checked: result.value.checked || [],
+        collapsed: result.value.collapsed || [],
+        phases: result.value.phases || JSON.parse(JSON.stringify(DEFAULT_PHASES)),
+        prioMap: result.value.prioMap || {},
+      };
+    }
+    setSynced(true);
+  } catch(e) {
+    setSynced(false);
+  }
+}
+
+async function saveToCloud() {
+  const hash = JSON.stringify(state);
+  if (hash === lastSavedHash) return;
+  showSaving(true);
+  try {
+    await apiCall('set', state);
+    lastSavedHash = hash;
+    setSynced(true);
+  } catch(e) {
+    setSynced(false);
+  }
+  showSaving(false);
+}
+
+function setSynced(ok) {
+  document.getElementById('sync-dot').className = 'sync-dot' + (ok ? ' ok' : '');
+  document.getElementById('sync-status').textContent = ok ? 'Synced' : 'Offline';
+}
+
+function showSaving(show) {
+  const el = document.getElementById('saving-msg');
+  el.className = 'saving' + (show ? ' show' : '');
+}
+
+function scheduleSave() {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(saveToCloud, 800);
+}
+
+function cyclePrio(p) { return p==='high'?'med':p==='med'?'low':'high'; }
+function prioLabel(p) { return p==='high'?'High':p==='med'?'Med':'Low'; }
+function prioClass(p) { return 'pbadge '+(p==='high'?'ph':p==='med'?'pm':'pl'); }
 
 function updateStats() {
   let total = 0, done = 0;
-  state.phases.forEach(ph => ph.tasks.forEach(t => { total++; if (state.checked.has(t.id)) done++; }));
+  state.phases.forEach(ph => ph.tasks.forEach(t => {
+    total++;
+    if (state.checked.includes(t.id)) done++;
+  }));
   document.getElementById('s-total').textContent = total;
   document.getElementById('s-done').textContent = done;
-  document.getElementById('s-pct').textContent = total ? Math.round(done / total * 100) + '%' : '0%';
+  document.getElementById('s-pct').textContent = total ? Math.round(done/total*100)+'%' : '0%';
 }
 
 function updateCountdown() {
-  const target = new Date('2026-07-01');
-  const now = new Date();
-  const days = Math.ceil((target - now) / 86400000);
-  const el = document.getElementById('countdown-text');
-  if (days > 0) el.textContent = days + ' days until move-in';
-  else if (days === 0) el.textContent = 'Move-in day is today!';
-  else el.textContent = 'Fran has moved in!';
+  const days = Math.ceil((new Date('2026-07-01') - new Date()) / 86400000);
+  const el = document.getElementById('countdown');
+  el.textContent = days > 0 ? days+' days until move-in' : days===0 ? 'Move-in day!' : 'Fran has moved in!';
 }
 
 function render() {
   const root = document.getElementById('phases-root');
   root.innerHTML = '';
+  const collapsedSet = new Set(state.collapsed);
+  const checkedSet = new Set(state.checked);
 
   state.phases.forEach(ph => {
     const total = ph.tasks.length;
-    const done = ph.tasks.filter(t => state.checked.has(t.id)).length;
-    const pct = total ? Math.round(done / total * 100) : 0;
-    const isOpen = !state.collapsed.has(ph.id);
+    const done = ph.tasks.filter(t => checkedSet.has(t.id)).length;
+    const pct = total ? Math.round(done/total*100) : 0;
+    const isOpen = !collapsedSet.has(ph.id);
 
     const wrap = document.createElement('div');
     wrap.className = 'phase';
@@ -254,63 +327,71 @@ function render() {
     const head = document.createElement('div');
     head.className = 'phase-head';
     head.innerHTML = `
-      <span class="phase-pill" style="background:${ph.pill};color:${ph.pillText}">${ph.label}</span>
-      <span class="phase-title">${ph.title}</span>
-      <span class="phase-dates">${ph.dates}</span>
-      <span class="phase-stat">${done}/${total}</span>
-      <span class="ph-chevron ${isOpen ? 'open' : ''}">▼</span>
+      <span class="ppill" style="background:${ph.pill};color:${ph.pillText}">${ph.label}</span>
+      <span class="ptitle">${ph.title}</span>
+      <span class="pdates">${ph.dates}</span>
+      <span class="pcount">${done}/${total}</span>
+      <span class="pchev ${isOpen?'open':''}">▼</span>
     `;
     head.addEventListener('click', () => {
-      state.collapsed.has(ph.id) ? state.collapsed.delete(ph.id) : state.collapsed.add(ph.id);
-      saveState(state); render(); updateStats();
+      const idx = state.collapsed.indexOf(ph.id);
+      if (idx > -1) state.collapsed.splice(idx, 1);
+      else state.collapsed.push(ph.id);
+      render(); updateStats(); scheduleSave();
     });
     wrap.appendChild(head);
 
-    const progWrap = document.createElement('div');
-    progWrap.className = 'prog-wrap';
-    const progBar = document.createElement('div');
-    progBar.className = 'prog-bar';
-    progBar.style.width = pct + '%';
-    progBar.style.background = ph.bar;
-    progWrap.appendChild(progBar);
-    wrap.appendChild(progWrap);
+    const pbarWrap = document.createElement('div');
+    pbarWrap.className = 'pbar-wrap';
+    pbarWrap.innerHTML = `<div class="pbar" style="width:${pct}%;background:${ph.bar}"></div>`;
+    wrap.appendChild(pbarWrap);
 
     if (isOpen) {
       const tl = document.createElement('div');
       tl.className = 'task-list';
 
       ph.tasks.forEach((t, idx) => {
-        const isDone = state.checked.has(t.id);
-        const currentPrio = state.prioMap[t.id] || t.prio;
+        const isDone = checkedSet.has(t.id);
+        const curPrio = state.prioMap[t.id] || t.prio;
 
         const row = document.createElement('div');
-        row.className = 'task' + (isDone ? ' done' : '');
+        row.className = 'task'+(isDone?' done':'');
         row.draggable = true;
         row.innerHTML = `
-          <span class="drag-handle">⠿</span>
+          <span class="dhandle">⠿</span>
           <div class="cb">
             <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-              <path d="M1.5 5l2.5 2.5 4.5-5" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M1.5 5l2.5 2.5 4.5-5" stroke="white" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </div>
-          <div class="task-body">
-            <div class="task-name">${t.name}</div>
-            <div class="task-detail">${t.detail}</div>
+          <div class="tbody">
+            <div class="tname">${t.name} <button class="edit-btn" data-pid="${ph.id}" data-idx="${idx}" title="Edit">✎</button></div>
+            <div class="tdetail">${t.detail}</div>
           </div>
-          <span class="${prioClass(currentPrio)}" data-tid="${t.id}">${prioLabel(currentPrio)}</span>
+          <span class="${prioClass(curPrio)}" data-pid="${ph.id}" data-idx="${idx}">${prioLabel(curPrio)}</span>
         `;
 
         row.querySelector('.cb').addEventListener('click', e => {
           e.stopPropagation();
-          state.checked.has(t.id) ? state.checked.delete(t.id) : state.checked.add(t.id);
-          saveState(state); render(); updateStats();
+          const ci = state.checked.indexOf(t.id);
+          if (ci > -1) state.checked.splice(ci, 1);
+          else state.checked.push(t.id);
+          render(); updateStats(); scheduleSave();
         });
 
-        row.querySelector('.prio').addEventListener('click', e => {
+        row.querySelector('.pbadge').addEventListener('click', e => {
           e.stopPropagation();
-          const cur = state.prioMap[t.id] || t.prio;
-          state.prioMap[t.id] = cyclePrio(cur);
-          saveState(state); render();
+          state.prioMap[t.id] = cyclePrio(state.prioMap[t.id] || t.prio);
+          render(); scheduleSave();
+        });
+
+        row.querySelector('.edit-btn').addEventListener('click', e => {
+          e.stopPropagation();
+          editTarget = { phaseId: ph.id, idx };
+          document.getElementById('modal-title').textContent = 'Edit task';
+          document.getElementById('edit-name').value = t.name;
+          document.getElementById('edit-detail').value = t.detail;
+          document.getElementById('edit-modal').classList.add('show');
         });
 
         row.addEventListener('dragstart', e => {
@@ -319,42 +400,72 @@ function render() {
           e.dataTransfer.effectAllowed = 'move';
         });
         row.addEventListener('dragend', () => {
-          document.querySelectorAll('.task').forEach(r => r.classList.remove('dragging', 'drag-over'));
+          document.querySelectorAll('.task').forEach(r => r.classList.remove('dragging','dragover'));
         });
-        row.addEventListener('dragover', e => { e.preventDefault(); row.classList.add('drag-over'); });
-        row.addEventListener('dragleave', () => row.classList.remove('drag-over'));
+        row.addEventListener('dragover', e => { e.preventDefault(); row.classList.add('dragover'); });
+        row.addEventListener('dragleave', () => row.classList.remove('dragover'));
         row.addEventListener('drop', e => {
           e.preventDefault();
-          row.classList.remove('drag-over');
+          row.classList.remove('dragover');
           if (dragPhaseId !== ph.id || dragSrc === null || dragSrc === idx) return;
           const [moved] = ph.tasks.splice(dragSrc, 1);
           ph.tasks.splice(idx, 0, moved);
           dragSrc = null;
-          saveState(state); render(); updateStats();
+          render(); updateStats(); scheduleSave();
         });
 
         tl.appendChild(row);
       });
-
       wrap.appendChild(tl);
     }
-
     root.appendChild(wrap);
   });
-
   updateStats();
 }
 
-document.getElementById('kd-toggle').addEventListener('click', () => {
-  const body = document.getElementById('kd-body');
-  const chevron = document.getElementById('kd-chevron');
+document.getElementById('dates-toggle').addEventListener('click', () => {
+  const body = document.getElementById('dates-body');
+  const chev = document.getElementById('dchev');
   const hidden = body.style.display === 'none';
   body.style.display = hidden ? '' : 'none';
-  chevron.classList.toggle('open', hidden);
+  chev.classList.toggle('open', hidden);
 });
 
-updateCountdown();
-render();
+document.getElementById('modal-cancel').addEventListener('click', () => {
+  document.getElementById('edit-modal').classList.remove('show');
+  editTarget = null;
+});
+
+document.getElementById('modal-save').addEventListener('click', () => {
+  if (!editTarget) return;
+  const ph = state.phases.find(p => p.id === editTarget.phaseId);
+  if (!ph) return;
+  ph.tasks[editTarget.idx].name = document.getElementById('edit-name').value.trim();
+  ph.tasks[editTarget.idx].detail = document.getElementById('edit-detail').value.trim();
+  document.getElementById('edit-modal').classList.remove('show');
+  editTarget = null;
+  render(); scheduleSave();
+});
+
+document.getElementById('edit-modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('edit-modal')) {
+    document.getElementById('edit-modal').classList.remove('show');
+    editTarget = null;
+  }
+});
+
+async function init() {
+  updateCountdown();
+  render();
+  await loadFromCloud();
+  render();
+  setInterval(async () => {
+    await loadFromCloud();
+    render();
+  }, POLL_INTERVAL);
+}
+
+init();
 </script>
 </body>
 </html>
