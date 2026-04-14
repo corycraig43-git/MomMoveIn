@@ -3,12 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fran's Move-In Plan — July 1, 2026</title>
+<title>Fran's Move-In Plan</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg:#f7f6f2; --card:#fff; --text:#1c1c2e; --muted:#6b7280; --border:#e5e4df; --radius:14px;
-}
+:root{--bg:#f7f6f2;--card:#fff;--text:#1c1c2e;--muted:#6b7280;--border:#e5e4df;--radius:14px;}
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
 header{background:var(--text);color:#fff;padding:2.5rem 1.5rem 2rem;position:relative;overflow:hidden;}
@@ -28,11 +26,13 @@ main{max-width:780px;margin:0 auto;padding:1.75rem 1rem 4rem;}
 .slabel{font-size:.7rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.25rem;}
 .sval{font-size:1.9rem;font-weight:500;line-height:1;}
 .dates-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:1.5rem;overflow:hidden;}
-.dates-head{display:flex;align-items:center;justify-content:space-between;padding:.8rem 1.25rem;border-bottom:1px solid var(--border);cursor:pointer;user-select:none;}
-.dates-head:hover{background:#fafaf8;}
+.dates-head{display:flex;align-items:center;justify-content:space-between;padding:.8rem 1.25rem;border-bottom:1px solid var(--border);user-select:none;}
+.dates-head-left{display:flex;align-items:center;gap:10px;cursor:pointer;flex:1;}
 .dates-head span{font-size:.75rem;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);}
 .dchev{font-size:.7rem;color:#bbb;transition:transform .2s;}
 .dchev.open{transform:rotate(180deg);}
+.edit-dates-btn{font-size:.72rem;font-weight:500;padding:3px 10px;border-radius:8px;border:1px solid var(--border);background:#fff;color:var(--muted);cursor:pointer;white-space:nowrap;transition:all .15s;flex-shrink:0;}
+.edit-dates-btn:hover{background:var(--text);color:#fff;border-color:var(--text);}
 .date-row{display:flex;align-items:center;gap:12px;padding:.7rem 1.25rem;border-bottom:1px solid var(--border);font-size:.88rem;}
 .date-row:last-child{border-bottom:none;}
 .dchip{font-size:.72rem;font-weight:500;background:#EBF5FB;color:#1a5276;border-radius:6px;padding:3px 9px;min-width:58px;text-align:center;white-space:nowrap;}
@@ -82,8 +82,9 @@ main{max-width:780px;margin:0 auto;padding:1.75rem 1rem 4rem;}
 .add-btn:hover{background:var(--text);color:#fff;border-color:var(--text);}
 .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;align-items:center;justify-content:center;}
 .modal-bg.show{display:flex;}
-.modal{background:#fff;border-radius:var(--radius);padding:1.5rem;width:90%;max-width:420px;}
-.modal h3{font-size:1rem;font-weight:500;margin-bottom:1rem;}
+.modal{background:#fff;border-radius:var(--radius);padding:1.5rem;width:90%;max-width:440px;max-height:90vh;overflow-y:auto;}
+.modal h3{font-size:1rem;font-weight:500;margin-bottom:.25rem;}
+.modal .modal-sub{font-size:.78rem;color:var(--muted);margin-bottom:1rem;}
 .modal label{font-size:.78rem;color:var(--muted);display:block;margin-bottom:.3rem;margin-top:.75rem;}
 .modal label:first-of-type{margin-top:0;}
 .modal input,.modal textarea,.modal select{width:100%;border:1px solid var(--border);border-radius:8px;padding:.55rem .75rem;font-size:.88rem;font-family:inherit;outline:none;color:var(--text);background:#fff;}
@@ -96,6 +97,14 @@ main{max-width:780px;margin:0 auto;padding:1.75rem 1rem 4rem;}
 .btn.primary:hover{background:#2d2d40;}
 .btn.danger{background:#FEE2E2;color:#991B1B;border-color:#fca5a5;}
 .btn.danger:hover{background:#fca5a5;}
+.date-edit-row{display:flex;gap:8px;align-items:center;padding:.5rem 0;border-bottom:1px solid var(--border);}
+.date-edit-row:last-child{border-bottom:none;}
+.date-edit-row input[type=text]{flex:1;min-width:0;}
+.date-edit-row input[type=text]:first-child{max-width:80px;}
+.date-edit-row .del-date-btn{background:none;border:none;cursor:pointer;color:#ccc;font-size:.9rem;padding:4px;border-radius:4px;flex-shrink:0;}
+.date-edit-row .del-date-btn:hover{color:#991B1B;background:#FEE2E2;}
+.add-date-btn{margin-top:.75rem;font-size:.78rem;font-weight:500;padding:5px 12px;border-radius:8px;border:1px solid var(--border);background:#fff;color:var(--muted);cursor:pointer;transition:all .15s;}
+.add-date-btn:hover{background:var(--text);color:#fff;border-color:var(--text);}
 .saving{font-size:.72rem;color:var(--muted);text-align:center;padding:.4rem;display:none;}
 .saving.show{display:block;}
 footer{text-align:center;font-size:.75rem;color:var(--muted);padding:1.5rem 1rem 3rem;}
@@ -106,7 +115,7 @@ footer{text-align:center;font-size:.75rem;color:var(--muted);padding:1.5rem 1rem
 <header>
   <div class="hinner">
     <h1>Fran's Move-In Plan</h1>
-    <p>Preparing the home together — July 1, 2026</p>
+    <p>Preparing the home together — June 27, 2026</p>
     <div class="chips">
       <div class="chip"><span class="dot"></span><span id="countdown">Loading...</span></div>
       <div class="chip"><span class="sdot" id="sdot"></span><span id="sstatus">Connecting...</span></div>
@@ -119,35 +128,31 @@ footer{text-align:center;font-size:.75rem;color:var(--muted);padding:1.5rem 1rem
     <div class="stat"><div class="slabel">Done</div><div class="sval" id="s-done">—</div></div>
     <div class="stat"><div class="slabel">Progress</div><div class="sval" id="s-pct">—</div></div>
   </div>
+
   <div class="dates-card">
-    <div class="dates-head" id="dates-toggle">
-      <span>Key dates</span>
-      <span class="dchev open" id="dchev">▼</span>
+    <div class="dates-head">
+      <div class="dates-head-left" id="dates-toggle">
+        <span>Key dates</span>
+        <span class="dchev open" id="dchev">▼</span>
+      </div>
+      <button class="edit-dates-btn" id="open-dates-editor">Edit dates</button>
     </div>
-    <div id="dates-body">
-      <div class="date-row"><span class="dchip">Apr 25</span><span>Visit Fran — discuss move plans &amp; choose paint colors</span></div>
-      <div class="date-row"><span class="dchip">May 1</span><span>Phase 1 deadline: planning &amp; decluttering complete</span></div>
-      <div class="date-row"><span class="dchip">May 2</span><span>Nephews painting — outside confirmed, inside TBD</span></div>
-      <div class="date-row"><span class="dchip">May 31</span><span>Phase 2 deadline: structural improvements complete</span></div>
-      <div class="date-row"><span class="dchip">Jun 15</span><span>Phase 3 deadline: moving &amp; logistics complete</span></div>
-      <div class="date-row"><span class="dchip movein">Jul 1</span><span style="font-weight:500">Move-in day — Fran moves in!</span></div>
-    </div>
+    <div id="dates-body"></div>
   </div>
+
   <p class="sec-label">Tap to complete · drag to reorder · ✎ edit · ✕ delete · type below a phase to add</p>
   <div id="phases-root"></div>
   <p class="saving" id="saving-msg">Saving...</p>
 </main>
-<footer>Shared between Cory &amp; wife · Syncs every 8 seconds · Move-in July 1, 2026</footer>
+<footer>Shared between Cory &amp; wife · Syncs every 8 seconds · Move-in June 27, 2026</footer>
 
+<!-- Edit task modal -->
 <div class="modal-bg" id="edit-modal">
   <div class="modal">
     <h3>Edit task</h3>
-    <label>Task name</label>
-    <input type="text" id="edit-name" />
-    <label>Details</label>
-    <textarea id="edit-detail" rows="2"></textarea>
-    <label>Move to phase</label>
-    <select id="edit-phase"></select>
+    <label>Task name</label><input type="text" id="edit-name"/>
+    <label>Details</label><textarea id="edit-detail" rows="2"></textarea>
+    <label>Move to phase</label><select id="edit-phase"></select>
     <div class="modal-actions">
       <button class="btn" id="modal-cancel">Cancel</button>
       <button class="btn primary" id="modal-save">Save</button>
@@ -155,6 +160,7 @@ footer{text-align:center;font-size:.75rem;color:var(--muted);padding:1.5rem 1rem
   </div>
 </div>
 
+<!-- Delete task modal -->
 <div class="modal-bg" id="confirm-modal">
   <div class="modal">
     <h3>Delete this task?</h3>
@@ -166,9 +172,31 @@ footer{text-align:center;font-size:.75rem;color:var(--muted);padding:1.5rem 1rem
   </div>
 </div>
 
+<!-- Edit dates modal -->
+<div class="modal-bg" id="dates-modal">
+  <div class="modal">
+    <h3>Edit key dates</h3>
+    <p class="modal-sub">Change dates or labels, add new rows, or remove ones you no longer need.</p>
+    <div id="dates-editor-rows"></div>
+    <button class="add-date-btn" id="add-date-row">+ Add a date</button>
+    <div class="modal-actions">
+      <button class="btn" id="dates-cancel">Cancel</button>
+      <button class="btn primary" id="dates-save">Save dates</button>
+    </div>
+  </div>
+</div>
+
 <script>
-const STORAGE_KEY='fran_movein_v3';
+const STORAGE_KEY='fran_movein_v4';
 const POLL_MS=8000;
+const DEFAULT_DATES=[
+  {date:'Apr 25',label:"Visit Fran — discuss move plans & choose paint colors",movein:false},
+  {date:'May 1',label:'Phase 1 deadline: planning & decluttering complete',movein:false},
+  {date:'May 2',label:'Nephews painting — outside confirmed, inside TBD',movein:false},
+  {date:'May 31',label:'Phase 2 deadline: structural improvements complete',movein:false},
+  {date:'Jun 15',label:'Phase 3 deadline: moving & logistics complete',movein:false},
+  {date:'Jun 27',label:'Move-in day — Fran moves in!',movein:true},
+];
 const DEFAULT_PHASES=[
   {id:"p1",label:"Phase 1",title:"Planning & Decluttering",dates:"Now – May 1",pill:"#EBF5FB",pillText:"#1a5276",bar:"#2980B9",tasks:[
     {id:"t1",name:"Clean out both closets",detail:"Sort into keep, donate, trash — free up space for Fran's belongings.",prio:"high"},
@@ -189,14 +217,14 @@ const DEFAULT_PHASES=[
     {id:"t12",name:"Move drums upstairs",detail:"Clear downstairs area and relocate drums to new spot.",prio:"high"},
     {id:"t13",name:"New car — trade in Volvo",detail:"Research options, get Volvo appraisal, finalize trade-in by late June.",prio:"med"},
   ]},
-  {id:"p4",label:"Phase 4",title:"Final Preparation & Move-In",dates:"Jun 15 – Jul 1",pill:"#FDEDEC",pillText:"#922b21",bar:"#C0392B",tasks:[
+  {id:"p4",label:"Phase 4",title:"Final Preparation & Move-In",dates:"Jun 15 – Jun 27",pill:"#FDEDEC",pillText:"#922b21",bar:"#C0392B",tasks:[
     {id:"t14",name:"Final deep clean",detail:"Deep clean newly painted rooms and installed carpets.",prio:"high"},
-    {id:"t15",name:"Move-in day — July 1",detail:"Assemble furniture and organize Fran's personal items.",prio:"high"},
+    {id:"t15",name:"Move-in day — June 27",detail:"Assemble furniture and organize Fran's personal items.",prio:"high"},
     {id:"t16",name:"Confirm all logistics complete",detail:"Verify car, storage, toilet, bed, and accessibility items are in order.",prio:"med"},
   ]},
 ];
 
-let state={checked:[],collapsed:[],phases:JSON.parse(JSON.stringify(DEFAULT_PHASES)),prioMap:{}};
+let state={checked:[],collapsed:[],phases:JSON.parse(JSON.stringify(DEFAULT_PHASES)),prioMap:{},keyDates:JSON.parse(JSON.stringify(DEFAULT_DATES))};
 let lastHash='',saveTimer=null,dragSrc=null,dragPhaseId=null,editTarget=null,deleteTarget=null;
 
 function uid(){return 't'+Date.now()+Math.random().toString(36).slice(2,5);}
@@ -214,14 +242,19 @@ For action "set": store the value and return {"ok":true}`,
     const j=await r.json();
     const txt=j.content?.find(b=>b.type==='text')?.text||'{}';
     return JSON.parse(txt.replace(/```json|```/g,'').trim());
-  }catch(e){return {};}
+  }catch(e){return{};}
 }
 
 async function loadCloud(){
   const res=await apiCall('get');
   if(res.value&&typeof res.value==='object'){
-    state={checked:res.value.checked||[],collapsed:res.value.collapsed||[],
-      phases:res.value.phases||JSON.parse(JSON.stringify(DEFAULT_PHASES)),prioMap:res.value.prioMap||{}};
+    state={
+      checked:res.value.checked||[],
+      collapsed:res.value.collapsed||[],
+      phases:res.value.phases||JSON.parse(JSON.stringify(DEFAULT_PHASES)),
+      prioMap:res.value.prioMap||{},
+      keyDates:res.value.keyDates||JSON.parse(JSON.stringify(DEFAULT_DATES)),
+    };
   }
   setSynced(true);
 }
@@ -254,11 +287,25 @@ function updateStats(){
 }
 
 function updateCountdown(){
-  const days=Math.ceil((new Date('2026-07-01')-new Date())/86400000);
+  const moveinDate=state.keyDates.find(d=>d.movein);
+  if(!moveinDate){document.getElementById('countdown').textContent='Move-in date TBD';return;}
+  const dateStr=moveinDate.label.match(/[A-Z][a-z]+ \d+/)?.[0]||moveinDate.date;
+  const days=Math.ceil((new Date('2026-'+moveinDate.date.replace(' ','-'))-new Date())/86400000);
   document.getElementById('countdown').textContent=days>0?days+' days until move-in':days===0?'Move-in day!':'Fran has moved in!';
 }
 
-function render(){
+function renderDates(){
+  const body=document.getElementById('dates-body');
+  body.innerHTML='';
+  (state.keyDates||[]).forEach(d=>{
+    const row=document.createElement('div');
+    row.className='date-row';
+    row.innerHTML=`<span class="dchip${d.movein?' movein':''}">${d.date}</span><span${d.movein?' style="font-weight:500"':''}>${d.label}</span>`;
+    body.appendChild(row);
+  });
+}
+
+function renderPhases(){
   const root=document.getElementById('phases-root');
   root.innerHTML='';
   const collSet=new Set(state.collapsed);
@@ -278,7 +325,7 @@ function render(){
     head.addEventListener('click',()=>{
       const i=state.collapsed.indexOf(ph.id);
       if(i>-1)state.collapsed.splice(i,1);else state.collapsed.push(ph.id);
-      render();updateStats();scheduleSave();
+      renderPhases();updateStats();scheduleSave();
     });
     wrap.appendChild(head);
 
@@ -290,7 +337,6 @@ function render(){
     if(isOpen){
       const tl=document.createElement('div');
       tl.className='task-list';
-
       ph.tasks.forEach((t,idx)=>{
         const isDone=chkSet.has(t.id);
         const curPrio=state.prioMap[t.id]||t.prio;
@@ -306,25 +352,23 @@ function render(){
             <button class="icon-btn edit-btn" title="Edit">✎</button>
             <button class="icon-btn del delete-btn" title="Delete">✕</button>
           </div>`;
-
         row.querySelector('.cb').addEventListener('click',e=>{
           e.stopPropagation();
           const ci=state.checked.indexOf(t.id);
           if(ci>-1)state.checked.splice(ci,1);else state.checked.push(t.id);
-          render();updateStats();scheduleSave();
+          renderPhases();updateStats();scheduleSave();
         });
         row.querySelector('.pbadge').addEventListener('click',e=>{
           e.stopPropagation();
           state.prioMap[t.id]=cyclePrio(state.prioMap[t.id]||t.prio);
-          render();scheduleSave();
+          renderPhases();scheduleSave();
         });
         row.querySelector('.edit-btn').addEventListener('click',e=>{
           e.stopPropagation();
           editTarget={phaseId:ph.id,idx};
           document.getElementById('edit-name').value=t.name;
           document.getElementById('edit-detail').value=t.detail||'';
-          const sel=document.getElementById('edit-phase');
-          sel.innerHTML=state.phases.map(p=>`<option value="${p.id}"${p.id===ph.id?' selected':''}>${p.label}: ${p.title}</option>`).join('');
+          document.getElementById('edit-phase').innerHTML=state.phases.map(p=>`<option value="${p.id}"${p.id===ph.id?' selected':''}>${p.label}: ${p.title}</option>`).join('');
           document.getElementById('edit-modal').classList.add('show');
         });
         row.querySelector('.delete-btn').addEventListener('click',e=>{
@@ -341,20 +385,15 @@ function render(){
           e.preventDefault();row.classList.remove('dragover');
           if(dragPhaseId!==ph.id||dragSrc===null||dragSrc===idx)return;
           const[moved]=ph.tasks.splice(dragSrc,1);ph.tasks.splice(idx,0,moved);
-          dragSrc=null;render();updateStats();scheduleSave();
+          dragSrc=null;renderPhases();updateStats();scheduleSave();
         });
         tl.appendChild(row);
       });
-
       const addRow=document.createElement('div');
       addRow.className='add-row';
       addRow.innerHTML=`<input class="add-inp" placeholder="Add a task to ${ph.label}..." type="text"/><button class="add-btn">+ Add</button>`;
       const inp=addRow.querySelector('.add-inp');
-      function doAdd(){
-        const val=inp.value.trim();if(!val)return;
-        ph.tasks.push({id:uid(),name:val,detail:'',prio:'med'});
-        inp.value='';render();updateStats();scheduleSave();
-      }
+      function doAdd(){const val=inp.value.trim();if(!val)return;ph.tasks.push({id:uid(),name:val,detail:'',prio:'med'});inp.value='';renderPhases();updateStats();scheduleSave();}
       addRow.querySelector('.add-btn').addEventListener('click',doAdd);
       inp.addEventListener('keydown',e=>{if(e.key==='Enter')doAdd();});
       tl.appendChild(addRow);
@@ -365,24 +404,80 @@ function render(){
   updateStats();
 }
 
+function render(){renderDates();renderPhases();updateCountdown();}
+
 document.getElementById('dates-toggle').addEventListener('click',()=>{
   const b=document.getElementById('dates-body'),c=document.getElementById('dchev');
   const hidden=b.style.display==='none';
-  b.style.display=hidden?'':'none';c.classList.toggle('open',hidden);
+  b.style.display=hidden?'':'none';
+  c.classList.toggle('open',hidden);
 });
+
+document.getElementById('open-dates-editor').addEventListener('click',()=>{
+  const container=document.getElementById('dates-editor-rows');
+  container.innerHTML='';
+  (state.keyDates||[]).forEach((d,i)=>{
+    const row=document.createElement('div');
+    row.className='date-edit-row';
+    row.innerHTML=`
+      <input type="text" value="${d.date}" placeholder="Apr 25" data-field="date" data-idx="${i}" style="max-width:80px;flex-shrink:0;"/>
+      <input type="text" value="${d.label}" placeholder="Description..." data-field="label" data-idx="${i}" style="flex:1;"/>
+      <button class="del-date-btn" data-del="${i}" title="Remove">✕</button>`;
+    row.querySelector('[data-del]').addEventListener('click',e=>{
+      e.target.closest('.date-edit-row').remove();
+    });
+    container.appendChild(row);
+  });
+  document.getElementById('dates-modal').classList.add('show');
+});
+
+document.getElementById('add-date-row').addEventListener('click',()=>{
+  const container=document.getElementById('dates-editor-rows');
+  const i=container.children.length;
+  const row=document.createElement('div');
+  row.className='date-edit-row';
+  row.innerHTML=`
+    <input type="text" value="" placeholder="Jun 27" data-field="date" data-idx="${i}" style="max-width:80px;flex-shrink:0;"/>
+    <input type="text" value="" placeholder="Description..." data-field="label" data-idx="${i}" style="flex:1;"/>
+    <button class="del-date-btn" data-del="${i}" title="Remove">✕</button>`;
+  row.querySelector('[data-del]').addEventListener('click',e=>{e.target.closest('.date-edit-row').remove();});
+  container.appendChild(row);
+  row.querySelector('input').focus();
+});
+
+document.getElementById('dates-cancel').addEventListener('click',()=>{
+  document.getElementById('dates-modal').classList.remove('show');
+});
+
+document.getElementById('dates-save').addEventListener('click',()=>{
+  const rows=document.querySelectorAll('#dates-editor-rows .date-edit-row');
+  const newDates=[];
+  rows.forEach(row=>{
+    const dateVal=row.querySelector('[data-field="date"]').value.trim();
+    const labelVal=row.querySelector('[data-field="label"]').value.trim();
+    if(dateVal&&labelVal){
+      const isMovein=labelVal.toLowerCase().includes('move-in')||labelVal.toLowerCase().includes('move in');
+      newDates.push({date:dateVal,label:labelVal,movein:isMovein});
+    }
+  });
+  state.keyDates=newDates;
+  document.getElementById('dates-modal').classList.remove('show');
+  render();scheduleSave();
+});
+
+document.getElementById('dates-modal').addEventListener('click',e=>{
+  if(e.target===document.getElementById('dates-modal'))document.getElementById('dates-modal').classList.remove('show');
+});
+
 document.getElementById('modal-cancel').addEventListener('click',()=>{document.getElementById('edit-modal').classList.remove('show');editTarget=null;});
 document.getElementById('modal-save').addEventListener('click',()=>{
   if(!editTarget)return;
-  const name=document.getElementById('edit-name').value.trim();
-  if(!name)return;
+  const name=document.getElementById('edit-name').value.trim();if(!name)return;
   const newPhId=document.getElementById('edit-phase').value;
   const oldPh=state.phases.find(p=>p.id===editTarget.phaseId);
   const task=oldPh.tasks[editTarget.idx];
   task.name=name;task.detail=document.getElementById('edit-detail').value.trim();
-  if(newPhId!==editTarget.phaseId){
-    oldPh.tasks.splice(editTarget.idx,1);
-    state.phases.find(p=>p.id===newPhId).tasks.push(task);
-  }
+  if(newPhId!==editTarget.phaseId){oldPh.tasks.splice(editTarget.idx,1);state.phases.find(p=>p.id===newPhId).tasks.push(task);}
   document.getElementById('edit-modal').classList.remove('show');editTarget=null;
   render();scheduleSave();
 });
@@ -400,8 +495,9 @@ document.getElementById('confirm-ok').addEventListener('click',()=>{
 document.getElementById('confirm-modal').addEventListener('click',e=>{if(e.target===document.getElementById('confirm-modal')){document.getElementById('confirm-modal').classList.remove('show');deleteTarget=null;}});
 
 async function init(){
-  updateCountdown();render();
-  await loadCloud();render();
+  render();
+  await loadCloud();
+  render();
   setInterval(async()=>{await loadCloud();render();},POLL_MS);
 }
 init();
