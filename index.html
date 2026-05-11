@@ -269,7 +269,8 @@ let editTarget=null, deleteTarget=null, addTargetPhaseId=null;
 function uid(){ return 't'+Date.now()+Math.random().toString(36).slice(2,6); }
 
 // ---- SUPABASE: load and save ----
-let rowCreatedAt = null; // we'll capture this on first load to use as update filter
+let rowCreatedAt = null;
+let lastLoadedData = '';
 
 async function loadCloud(){
   try {
@@ -278,10 +279,11 @@ async function loadCloud(){
     });
     const rows = await r.json();
     if (Array.isArray(rows) && rows.length > 0) {
-      // Store created_at so we can use it as a filter when saving
       if (rows[0].created_at) rowCreatedAt = encodeURIComponent(rows[0].created_at);
-      if (rows[0].data) {
-        const saved = JSON.parse(rows[0].data);
+      const incoming = rows[0].data;
+      if (incoming && incoming !== lastLoadedData) {
+        lastLoadedData = incoming;
+        const saved = JSON.parse(incoming);
         state = {
           checked:   saved.checked   || [],
           collapsed: saved.collapsed || [],
@@ -289,10 +291,13 @@ async function loadCloud(){
           prioMap:   saved.prioMap   || {},
           keyDates:  saved.keyDates  || JSON.parse(JSON.stringify(DEFAULT_DATES)),
         };
+        setSynced(true);
+        return true;
       }
     }
     setSynced(true);
-  } catch(e){ setSynced(false); }
+    return false;
+  } catch(e){ setSynced(false); return false; }
 }
 
 async function saveCloud(){
@@ -600,10 +605,18 @@ document.getElementById('dates-toggle').addEventListener('click',()=>{
 });
 
 async function init(){
-  render();
+  document.getElementById('sstatus').textContent = 'Loading...';
+  // Always load from Supabase FIRST before rendering
   await loadCloud();
+  // Now render with real saved data
   render();
-  setInterval(async()=>{if(!isSaving){await loadCloud();render();}},POLL_MS);
+  // Poll — only re-render if data actually changed
+  setInterval(async()=>{
+    if(!isSaving){
+      const changed = await loadCloud();
+      if(changed) render();
+    }
+  }, POLL_MS);
 }
 init();
 </script>
