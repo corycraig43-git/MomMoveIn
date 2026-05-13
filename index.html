@@ -274,15 +274,21 @@ let lastLoadedData = '';
 
 async function loadCloud(){
   try {
-    const r = await fetch(`${SB_URL}/rest/v1/state?select=data,created_at&limit=1&order=created_at.asc`, {
-      headers: {'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}
+    // Add cache-busting timestamp to prevent stale responses
+    const ts = Date.now();
+    const r = await fetch(`${SB_URL}/rest/v1/state?select=data,created_at&limit=1&order=created_at.asc&ts=${ts}`, {
+      headers: {
+        'apikey': SB_KEY,
+        'Authorization': 'Bearer ' + SB_KEY,
+        'Cache-Control': 'no-cache, no-store',
+        'Pragma': 'no-cache'
+      }
     });
     const rows = await r.json();
     if (Array.isArray(rows) && rows.length > 0) {
-      if (rows[0].created_at) rowCreatedAt = encodeURIComponent(rows[0].created_at.replace('+', '%2B'));
+      if (rows[0].created_at) rowCreatedAt = rows[0].created_at;
       const incoming = rows[0].data;
-      if (incoming && incoming !== lastLoadedData) {
-        lastLoadedData = incoming;
+      if (incoming) {
         const saved = JSON.parse(incoming);
         state = {
           checked:   saved.checked   || [],
@@ -297,7 +303,12 @@ async function loadCloud(){
     }
     setSynced(true);
     return false;
-  } catch(e){ setSynced(false); return false; }
+  } catch(e){ 
+    console.error('loadCloud error:', e);
+    setSynced(false); 
+    return false; 
+  }
+} catch(e){ setSynced(false); return false; }
 }
 
 async function saveCloud(){
@@ -606,19 +617,7 @@ document.getElementById('dates-toggle').addEventListener('click',()=>{
 
 async function init(){
   document.getElementById('sstatus').textContent = 'Loading...';
-  // Always load from Supabase FIRST before rendering
-  await loadCloud();
-  // Now render with real saved data
-  render();
-  // Poll — only re-render if data actually changed
-  setInterval(async()=>{
-    if(!isSaving){
-      const changed = await loadCloud();
-      if(changed) render();
-    }
-  }, POLL_MS);
-}
-init();
-</script>
-</body>
-</html>
+  document.getElementById('sdot').className = 'sdot';
+  // Always load from Supabase FIRST — never render default data
+  let loaded = false;
+  let 
