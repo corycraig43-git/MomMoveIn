@@ -306,39 +306,28 @@ async function saveCloud(){
   setSynced(false);
   try {
     const dataStr = JSON.stringify(state);
-    // Step 1: Delete all rows
-    const del = await fetch(`${SB_URL}/rest/v1/state?created_at=not.is.null`, {
-      method: 'DELETE',
-      headers: {
-        'apikey': SB_KEY,
-        'Authorization': 'Bearer ' + SB_KEY,
-        'Content-Type': 'application/json'
-      }
-    });
-    // Step 2: Insert fresh row with current state
-    const ins = await fetch(`${SB_URL}/rest/v1/state`, {
+    // Try simple POST with upsert - Supabase will insert or update
+    const r = await fetch(`${SB_URL}/rest/v1/state`, {
       method: 'POST',
       headers: {
         'apikey': SB_KEY,
         'Authorization': 'Bearer ' + SB_KEY,
         'Content-Type': 'application/json',
-        'Prefer': 'return=representation'
+        'Prefer': 'resolution=merge-duplicates,return=minimal'
       },
       body: JSON.stringify({data: dataStr})
     });
-    if(ins.ok){
-      const rows = await ins.json();
-      if(rows[0]?.created_at) rowCreatedAt = rows[0].created_at;
+    if(r.ok){
       setSynced(true);
       showToast('Saved ✓', false);
     } else {
-      const err = await ins.text();
-      console.error('Insert failed:', ins.status, err);
-      showToast('Save failed', true);
+      const err = await r.text();
+      console.error('Save error status:', r.status, 'body:', err);
+      showToast('Save failed: ' + r.status, true);
       setSynced(false);
     }
   } catch(e){
-    console.error('saveCloud error:', e);
+    console.error('saveCloud exception:', e);
     showToast('Save failed — check connection', true);
     setSynced(false);
   }
