@@ -580,4 +580,301 @@ document.getElementById('add-name').addEventListener('keydown', e => { if(e.key=
 document.getElementById('add-modal').addEventListener('click', e => { if(e.target===document.getElementById('add-modal')){ document.getElementById('add-modal').classList.remove('show'); addTargetPhaseId=null; } });
 
 document.getElementById('edit-cancel').addEventListener('click', () => { document.getElementById('edit-modal').classList.remove('show'); editTarget=null; });
-documen
+document.getElementById('edit-save').addEventListener('click', () => {
+  if (!editTarget) return;
+  const name = document.getElementById('edit-name').value.trim();
+  if (!name) { document.getElementById('edit-name').focus(); return; }
+  const newPhId = document.getElementById('edit-phase').value;
+  const oldPh   = state.phases.find(p => p.id===editTarget.phaseId);
+  const task    = oldPh.tasks[editTarget.idx];
+  task.name = name; task.detail = document.getElementById('edit-detail').value.trim();
+  task.prio = document.getElementById('edit-prio').value;
+  state.prioMap[task.id] = task.prio;
+  if (newPhId!==editTarget.phaseId){ oldPh.tasks.splice(editTarget.idx,1); state.phases.find(p=>p.id===newPhId).tasks.push(task); }
+  document.getElementById('edit-modal').classList.remove('show'); editTarget=null;
+  render(); scheduleSave();
+});
+document.getElementById('edit-modal').addEventListener('click', e => { if(e.target===document.getElementById('edit-modal')){ document.getElementById('edit-modal').classList.remove('show'); editTarget=null; } });
+
+document.getElementById('confirm-cancel').addEventListener('click', () => { document.getElementById('confirm-modal').classList.remove('show'); deleteTarget=null; });
+document.getElementById('confirm-ok').addEventListener('click', () => {
+  if (!deleteTarget) return;
+  const ph = state.phases.find(p => p.id===deleteTarget.phaseId);
+  ph.tasks.splice(deleteTarget.idx,1);
+  const ci = state.checked.indexOf(deleteTarget.tid);
+  if (ci>-1) state.checked.splice(ci,1);
+  delete state.prioMap[deleteTarget.tid];
+  document.getElementById('confirm-modal').classList.remove('show'); deleteTarget=null;
+  render(); updateStats(); scheduleSave();
+});
+document.getElementById('confirm-modal').addEventListener('click', e => { if(e.target===document.getElementById('confirm-modal')){ document.getElementById('confirm-modal').classList.remove('show'); deleteTarget=null; } });
+
+// ── DATES MODAL (with auto-sort on save) ─────────────────────────────────────
+function makeDateRow(container, dv, lv){
+  const row = document.createElement('div'); row.className='de-row';
+  const ci = document.createElement('input'); ci.className='de-chip'; ci.type='text'; ci.placeholder='Jun 27'; ci.value=dv||'';
+  const li = document.createElement('input'); li.className='de-label'; li.type='text'; li.placeholder='Description...'; li.value=lv||'';
+  const db = document.createElement('button'); db.className='de-del'; db.type='button'; db.textContent='\u2715';
+  db.addEventListener('click', () => row.remove());
+  row.appendChild(ci); row.appendChild(li); row.appendChild(db);
+  container.appendChild(row); return row;
+}
+document.getElementById('open-dates-editor').addEventListener('click', () => {
+  const c = document.getElementById('dates-editor-rows'); c.innerHTML='';
+  (state.keyDates||[]).forEach(d => makeDateRow(c, d.date, d.label));
+  document.getElementById('dates-modal').classList.add('show');
+});
+document.getElementById('add-de-btn').addEventListener('click', () => { makeDateRow(document.getElementById('dates-editor-rows'),'','').querySelector('input').focus(); });
+document.getElementById('dates-cancel').addEventListener('click', () => document.getElementById('dates-modal').classList.remove('show'));
+document.getElementById('dates-save').addEventListener('click', () => {
+  const nd = [];
+  document.querySelectorAll('#dates-editor-rows .de-row').forEach(row => {
+    const ins = row.querySelectorAll('input');
+    const d=ins[0].value.trim(), l=ins[1].value.trim();
+    if(d&&l) nd.push({date:d, label:l, movein:l.toLowerCase().includes('move-in')||l.toLowerCase().includes('move in')});
+  });
+  // AUTO-SORT by date before saving
+  state.keyDates = sortKeyDates(nd);
+  document.getElementById('dates-modal').classList.remove('show');
+  render(); scheduleSave();
+  toast('Dates saved & sorted ✓');
+});
+document.getElementById('dates-modal').addEventListener('click', e => { if(e.target===document.getElementById('dates-modal')) document.getElementById('dates-modal').classList.remove('show'); });
+document.getElementById('dates-toggle').addEventListener('click', () => {
+  const b=document.getElementById('dates-body'), c=document.getElementById('dchev');
+  const h=b.style.display==='none'; b.style.display=h?'':'none'; c.classList.toggle('open',h);
+});
+
+// ── IMPORT MODAL ─────────────────────────────────────────────────────────────
+function parseTextToTasks(text) {
+  return text.split('\n')
+    .map(l => l.replace(/^[\-\*\•\d\.\)\s]+/, '').trim())  // strip bullets/numbers
+    .filter(l => l.length > 1);
+}
+
+async function processImportFile(file) {
+  const ext = file.name.split('.').pop().toLowerCase();
+  // For xlsx: unzip and parse the XML directly — no eval needed
+  if (ext === 'xlsx') {
+    try {
+      const tasks = await parseXlsxSafe(file);
+      return tasks;
+    } catch(e) {
+      // fallback: try reading as text
+      console.warn('xlsx parse failed, falling back to text:', e);
+    }
+  }
+  // For csv, txt, xls (old format), or fallback: read as text
+  const text = await new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = e => res(e.target.result);
+    r.onerror = () => rej(new Error('Read failed'));
+    r.readAsText(file);
+  });
+  return parseTextToTasks(text);
+}
+
+// Parse .xlsx by unzipping it and reading the XML — no eval, CSP-safe
+async function parseXlsxSafe(file) {
+  const buf = await file.arrayBuffer();
+  // .xlsx is a zip — find shared strings and sheet1 XML
+  const zip = await unzipBuffer(buf);
+  const sharedStringsXml = zip['xl/sharedStrings.xml'] || '';
+  const sheetXml = zip['xl/worksheets/sheet1.xml'] || '';
+  if (!sheetXml) throw new Error('No sheet1 found');
+
+  // Parse shared strings
+  const strings = [];
+  const siMatches = sharedStringsXml.matchAll(/<si>[\s\S]*?<\/si>/g);
+  for (const m of siMatches) {
+    const tMatches = [...m[0].matchAll(/<t[^>]*>([^<]*)<\/t>/g)];
+    strings.push(tMatches.map(t => t[1]).join(''));
+  }
+
+  // Parse first-column cells from sheet rows
+  const tasks = [];
+  const rowMatches = sheetXml.matchAll(/<row[^>]*>([\s\S]*?)<\/row>/g);
+  for (const rowM of rowMatches) {
+    const rowXml = rowM[1];
+    // Find first cell (column A)
+    const cellMatch = rowXml.match(/<c r="A\d+"[^>]*>([\s\S]*?)<\/c>/);
+    if (!cellMatch) continue;
+    const cellXml = cellMatch[0];
+    const vMatch = cellXml.match(/<v>([^<]*)<\/v>/);
+    if (!vMatch) continue;
+    const isShared = /t="s"/.test(cellXml);
+    const val = isShared ? (strings[parseInt(vMatch[1])] || '') : vMatch[1];
+    const clean = val.replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').trim();
+    if (clean.length > 1) tasks.push(clean);
+  }
+  return tasks;
+}
+
+// Minimal zip reader — extracts text files from a .zip/.xlsx buffer
+async function unzipBuffer(buf) {
+  const view = new DataView(buf);
+  const bytes = new Uint8Array(buf);
+  const files = {};
+  const dec = new TextDecoder();
+
+  // Find end-of-central-directory record
+  let eocd = -1;
+  for (let i = bytes.length - 22; i >= 0; i--) {
+    if (view.getUint32(i, true) === 0x06054b50) { eocd = i; break; }
+  }
+  if (eocd < 0) throw new Error('Not a valid zip');
+
+  const cdOffset = view.getUint32(eocd + 16, true);
+  const cdSize   = view.getUint32(eocd + 12, true);
+  let pos = cdOffset;
+  const end = cdOffset + cdSize;
+
+  while (pos < end) {
+    if (view.getUint32(pos, true) !== 0x02014b50) break;
+    const compMethod  = view.getUint16(pos + 10, true);
+    const compSize    = view.getUint32(pos + 20, true);
+    const uncompSize  = view.getUint32(pos + 24, true);
+    const fnLen       = view.getUint16(pos + 28, true);
+    const extraLen    = view.getUint16(pos + 30, true);
+    const commentLen  = view.getUint16(pos + 32, true);
+    const localOffset = view.getUint32(pos + 42, true);
+    const name        = dec.decode(bytes.slice(pos + 46, pos + 46 + fnLen));
+    pos += 46 + fnLen + extraLen + commentLen;
+
+    // Only extract XML files we care about
+    if (!name.endsWith('.xml') && !name.endsWith('.rels')) continue;
+
+    // Read local file header to find data start
+    const lhExtraLen = view.getUint16(localOffset + 28, true);
+    const lhFnLen    = view.getUint16(localOffset + 26, true);
+    const dataStart  = localOffset + 30 + lhFnLen + lhExtraLen;
+    const compData   = bytes.slice(dataStart, dataStart + compSize);
+
+    let text = '';
+    if (compMethod === 0) {
+      // Stored (no compression)
+      text = dec.decode(compData);
+    } else if (compMethod === 8) {
+      // Deflate
+      try {
+        const ds = new DecompressionStream('deflate-raw');
+        const writer = ds.writable.getWriter();
+        writer.write(compData); writer.close();
+        const chunks = [];
+        const reader = ds.readable.getReader();
+        while (true) {
+          const {done, value} = await reader.read();
+          if (done) break;
+          chunks.push(value);
+        }
+        const total = chunks.reduce((s,c) => s + c.length, 0);
+        const out = new Uint8Array(total);
+        let off = 0;
+        for (const c of chunks) { out.set(c, off); off += c.length; }
+        text = dec.decode(out);
+      } catch(e) { text = ''; }
+    }
+    files[name] = text;
+  }
+  return files;
+}
+
+function showImportPreview(tasks) {
+  importParsedTasks = tasks;
+  const wrap = document.getElementById('import-preview-wrap');
+  const count = document.getElementById('import-count');
+  const preview = document.getElementById('import-preview');
+  if (tasks.length === 0) {
+    wrap.style.display = 'block';
+    count.textContent = 'No tasks found — check your file or paste text below.';
+    count.style.color = '#991B1B';
+    preview.textContent = '';
+    document.getElementById('import-confirm-btn').style.display = 'none';
+    document.getElementById('import-preview-btn').style.display = '';
+    return;
+  }
+  wrap.style.display = 'block';
+  count.textContent = tasks.length + ' task' + (tasks.length>1?'s':'') + ' ready to import:';
+  count.style.color = '#16a34a';
+  preview.textContent = tasks.map((t,i) => (i+1)+'. '+t).join('\n');
+  document.getElementById('import-preview-btn').style.display = 'none';
+  document.getElementById('import-confirm-btn').style.display = '';
+}
+
+// Drop zone
+const dropzone = document.getElementById('import-dropzone');
+dropzone.addEventListener('click', () => document.getElementById('import-file-input').click());
+dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('dragover'); });
+dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+dropzone.addEventListener('drop', async e => {
+  e.preventDefault(); dropzone.classList.remove('dragover');
+  const file = e.dataTransfer.files[0];
+  if (!file) return;
+  try {
+    const tasks = await processImportFile(file);
+    document.getElementById('import-paste').value = '';
+    showImportPreview(tasks);
+  } catch(err) { toast('Could not read file: ' + err.message, true); }
+});
+document.getElementById('import-file-input').addEventListener('change', async e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  try {
+    const tasks = await processImportFile(file);
+    document.getElementById('import-paste').value = '';
+    showImportPreview(tasks);
+  } catch(err) { toast('Could not read file: ' + err.message, true); }
+  e.target.value = ''; // reset so same file can be re-selected
+});
+
+// Preview button (for pasted text)
+document.getElementById('import-preview-btn').addEventListener('click', () => {
+  const pasted = document.getElementById('import-paste').value.trim();
+  if (!pasted) { toast('Paste some tasks or drop a file above', true); return; }
+  const tasks = parseTextToTasks(pasted);
+  showImportPreview(tasks);
+});
+
+// Paste textarea — reset preview if they keep typing
+document.getElementById('import-paste').addEventListener('input', () => {
+  document.getElementById('import-preview-wrap').style.display = 'none';
+  document.getElementById('import-preview-btn').style.display = '';
+  document.getElementById('import-confirm-btn').style.display = 'none';
+  importParsedTasks = [];
+});
+
+// Confirm import
+document.getElementById('import-confirm-btn').addEventListener('click', () => {
+  if (!importParsedTasks.length || !importTargetPhaseId) return;
+  const ph = state.phases.find(p => p.id === importTargetPhaseId);
+  if (!ph) return;
+  const prio = document.getElementById('import-prio').value;
+  importParsedTasks.forEach(name => ph.tasks.push({id:uid(), name, detail:'', prio}));
+  document.getElementById('import-modal').classList.remove('show');
+  importTargetPhaseId = null; importParsedTasks = [];
+  render(); scheduleSave();
+  toast('Tasks imported ✓');
+});
+
+document.getElementById('import-cancel').addEventListener('click', () => {
+  document.getElementById('import-modal').classList.remove('show');
+  importTargetPhaseId = null; importParsedTasks = [];
+});
+document.getElementById('import-modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('import-modal')) {
+    document.getElementById('import-modal').classList.remove('show');
+    importTargetPhaseId = null; importParsedTasks = [];
+  }
+});
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+async function init(){
+  document.getElementById('sstatus').textContent = 'Loading...';
+  await loadCloud();
+  render();
+  setInterval(async () => { if (!isSaving){ await loadCloud(); render(); } }, 6000);
+}
+init();
+</script>
+</body>
+</html>
