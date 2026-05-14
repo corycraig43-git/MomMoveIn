@@ -258,7 +258,7 @@ const SB_H = { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Content-T
 
 async function loadCloud(){
   try {
-    const r = await fetch(SB_URL + '/rest/v1/state?select=data&limit=1&order=created_at.asc', { headers: SB_H });
+    const r = await fetch(SB_URL + '/rest/v1/state?select=data&limit=1&order=created_at.asc', { headers: SB_H, cache: 'no-store' });
     const rows = await r.json();
     if (Array.isArray(rows) && rows.length > 0 && rows[0].data && rows[0].data.length > 2) {
       const saved = JSON.parse(rows[0].data);
@@ -587,5 +587,4 @@ async function init(){
   document.getElementById('sstatus').textContent = 'Loading...';
   await loadCloud();
   render();
-  setInterval(async () => {
-    if (!isSaving
+  setInterval(async () => 
