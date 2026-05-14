@@ -317,29 +317,44 @@ async function saveCloud(){
   setSynced(false);
   try {
     const dataStr = JSON.stringify(state);
-    // Try simple POST with upsert - Supabase will insert or update
-    const r = await fetch(`${SB_URL}/rest/v1/state`, {
+    // Use UPDATE via SQL RPC — always updates existing row, never inserts
+    const r = await fetch(`${SB_URL}/rest/v1/rpc/save_state`, {
       method: 'POST',
       headers: {
         'apikey': SB_KEY,
         'Authorization': 'Bearer ' + SB_KEY,
-        'Content-Type': 'application/json',
-        'Prefer': 'resolution=merge-duplicates,return=minimal'
+        'Content-Type': 'application/json'
       },
-      body: JSON.stringify({data: dataStr})
+      body: JSON.stringify({state_data: dataStr})
     });
     if(r.ok){
       setSynced(true);
       showToast('Saved ✓', false);
     } else {
-      const err = await r.text();
-      console.error('Save error status:', r.status, 'body:', err);
-      showToast('Save failed: ' + r.status, true);
-      setSynced(false);
+      // Fallback: PATCH all rows (since there should only be one)
+      const r2 = await fetch(`${SB_URL}/rest/v1/state?created_at=not.is.null`, {
+        method: 'PATCH',
+        headers: {
+          'apikey': SB_KEY,
+          'Authorization': 'Bearer ' + SB_KEY,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({data: dataStr})
+      });
+      if(r2.ok){
+        setSynced(true);
+        showToast('Saved ✓', false);
+      } else {
+        const err = await r2.text();
+        console.error('Save failed:', r2.status, err);
+        showToast('Save failed: ' + r2.status, true);
+        setSynced(false);
+      }
     }
   } catch(e){
-    console.error('saveCloud exception:', e);
-    showToast('Save failed — check connection', true);
+    console.error('saveCloud error:', e);
+    showToast('Save failed', true);
     setSynced(false);
   }
   isSaving = false;
@@ -620,4 +635,22 @@ async function init(){
   document.getElementById('sdot').className = 'sdot';
   // Always load from Supabase FIRST — never render default data
   let loaded = false;
-  let 
+  let attempts = 0;
+  while(!loaded && attempts < 3){
+    loaded = await loadCloud();
+    attempts++;
+    if(!loaded) await new Promise(r => setTimeout(r, 1000));
+  }
+  render();
+  // Poll every 5 seconds — always re-render to catch wife's changes
+  setInterval(async()=>{
+    if(!isSaving){
+      await loadCloud();
+      render();
+    }
+  }, 5000);
+}
+init();
+</script>
+</body>
+</html>
