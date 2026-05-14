@@ -6,6 +6,7 @@
 <title>Fran's Move-In Plan</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
 :root{--bg:#f7f6f2;--card:#fff;--text:#1c1c2e;--muted:#6b7280;--border:#e5e4df;--radius:14px;}
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -103,6 +104,18 @@ main{max-width:780px;margin:0 auto;padding:1.75rem 1rem 4rem;}
 .de-del:hover{color:#991B1B;background:#FEE2E2;}
 .add-de-btn{margin-top:.7rem;font-size:.78rem;font-weight:500;padding:5px 12px;border-radius:8px;border:1px solid var(--border);background:#fff;color:var(--muted);cursor:pointer;transition:all .15s;}
 .add-de-btn:hover{background:var(--text);color:#fff;border-color:var(--text);}
+/* sort hint badge */
+.sort-hint{font-size:.7rem;color:#6b7280;background:#f3f4f6;border:1px solid var(--border);border-radius:6px;padding:3px 8px;margin-left:auto;margin-right:.5rem;}
+/* import modal styles */
+.import-zone{border:2px dashed var(--border);border-radius:10px;padding:1.5rem;text-align:center;cursor:pointer;transition:all .15s;margin-bottom:.75rem;}
+.import-zone:hover,.import-zone.dragover{border-color:#93c5fd;background:#EBF5FB;}
+.import-zone-icon{font-size:1.8rem;margin-bottom:.4rem;}
+.import-zone-label{font-size:.82rem;color:var(--muted);}
+.import-zone-sub{font-size:.72rem;color:#9ca3af;margin-top:.2rem;}
+.import-divider{display:flex;align-items:center;gap:.5rem;margin:.75rem 0;color:#9ca3af;font-size:.75rem;}
+.import-divider::before,.import-divider::after{content:'';flex:1;height:1px;background:var(--border);}
+.import-preview{background:#f8f9fa;border:1px solid var(--border);border-radius:8px;padding:.6rem .75rem;font-size:.78rem;color:var(--muted);max-height:120px;overflow-y:auto;margin-bottom:.5rem;font-family:monospace;white-space:pre-wrap;}
+.import-count{font-size:.78rem;color:#16a34a;font-weight:500;margin-bottom:.5rem;}
 .toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:#16a34a;color:#fff;font-size:.82rem;padding:.5rem 1.4rem;border-radius:999px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:200;white-space:nowrap;}
 .toast.show{opacity:1;}
 .toast.err{background:#991B1B;}
@@ -134,7 +147,7 @@ footer{text-align:center;font-size:.75rem;color:var(--muted);padding:1.5rem 1rem
     </div>
     <div id="dates-body"></div>
   </div>
-  <p class="sec-label">Tap checkbox to complete · drag to reorder · ✎ edit · ✕ delete · use "+ Add task" to add</p>
+  <p class="sec-label">Tap checkbox to complete · drag to reorder · ✎ edit · ✕ delete · use "+ Add task" to add · ↑ import from file</p>
   <div id="phases-root"></div>
 </main>
 <div class="toast" id="toast"></div>
@@ -190,12 +203,47 @@ footer{text-align:center;font-size:.75rem;color:var(--muted);padding:1.5rem 1rem
 <div class="modal-bg" id="dates-modal">
   <div class="modal">
     <h3>Edit key dates</h3>
-    <p class="modal-sub">Update dates or labels. Rows with "move-in" highlight green automatically.</p>
+    <p class="modal-sub">Dates sort automatically when saved. Rows with "move-in" highlight green.</p>
     <div id="dates-editor-rows"></div>
     <button class="add-de-btn" id="add-de-btn">+ Add a date</button>
     <div class="modal-actions">
       <button class="btn" id="dates-cancel">Cancel</button>
-      <button class="btn primary" id="dates-save">Save dates</button>
+      <button class="btn primary" id="dates-save">Save &amp; sort dates</button>
+    </div>
+  </div>
+</div>
+
+<!-- IMPORT TASKS MODAL -->
+<div class="modal-bg" id="import-modal">
+  <div class="modal">
+    <h3>Import tasks</h3>
+    <p class="modal-sub" id="import-modal-sub"></p>
+
+    <!-- Drop zone -->
+    <div class="import-zone" id="import-dropzone">
+      <div class="import-zone-icon">📂</div>
+      <div class="import-zone-label">Drop an Excel or text file here</div>
+      <div class="import-zone-sub">.xlsx · .xls · .csv · .txt (one task per line)</div>
+    </div>
+    <input type="file" id="import-file-input" accept=".xlsx,.xls,.csv,.txt" style="display:none">
+
+    <div class="import-divider">or paste tasks manually</div>
+
+    <label class="flabel">Paste tasks (one per line)</label>
+    <textarea class="ftextarea" id="import-paste" placeholder="Buy storage bins&#10;Schedule carpet install&#10;Order adjustable bed" style="min-height:80px;"></textarea>
+
+    <div id="import-preview-wrap" style="display:none;margin-top:.75rem;">
+      <div class="import-count" id="import-count"></div>
+      <div class="import-preview" id="import-preview"></div>
+    </div>
+
+    <label class="flabel">Priority for imported tasks</label>
+    <select class="fselect" id="import-prio"><option value="high">High</option><option value="med" selected>Med</option><option value="low">Low</option></select>
+
+    <div class="modal-actions">
+      <button class="btn" id="import-cancel">Cancel</button>
+      <button class="btn primary" id="import-preview-btn">Preview</button>
+      <button class="btn primary" id="import-confirm-btn" style="display:none">Import tasks</button>
     </div>
   </div>
 </div>
@@ -253,8 +301,25 @@ let isSaving = false;
 let saveTimer = null;
 let dragSrc = null, dragPhaseId = null;
 let editTarget = null, deleteTarget = null, addTargetPhaseId = null;
+let importTargetPhaseId = null;
+let importParsedTasks = [];
 
 function uid(){ return 't' + Date.now() + Math.random().toString(36).slice(2,6); }
+
+// ── DATE SORTING ─────────────────────────────────────────────────────────────
+// Parse date strings like "Jun 27", "May 1", "Apr 25" into a sortable number
+const MONTH_ORDER = {jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12};
+function parseDateStr(d) {
+  const parts = d.trim().split(/[\s\-\/]+/);
+  if (parts.length < 2) return 9999;
+  const mon = MONTH_ORDER[parts[0].toLowerCase().slice(0,3)];
+  const day = parseInt(parts[1], 10);
+  if (!mon || isNaN(day)) return 9999;
+  return mon * 100 + day;
+}
+function sortKeyDates(dates) {
+  return [...dates].sort((a, b) => parseDateStr(a.date) - parseDateStr(b.date));
+}
 
 // ── SUPABASE LOAD & SAVE ──────────────────────────────────────────────────────
 async function loadCloud(){
@@ -379,6 +444,26 @@ function renderPhases(){
       renderPhases(); updateStats(); scheduleSave();
     });
 
+    // Import button
+    const ib = document.createElement('button');
+    ib.className = 'sm-btn';
+    ib.style.marginRight = '.25rem';
+    ib.textContent = '↑ Import';
+    ib.title = 'Import tasks from Excel, CSV, or text file';
+    ib.addEventListener('click', e => {
+      e.stopPropagation();
+      importTargetPhaseId = ph.id;
+      importParsedTasks = [];
+      document.getElementById('import-modal-sub').textContent = 'Adding tasks to '+ph.label+': '+ph.title;
+      document.getElementById('import-paste').value = '';
+      document.getElementById('import-preview-wrap').style.display = 'none';
+      document.getElementById('import-preview-btn').style.display = '';
+      document.getElementById('import-confirm-btn').style.display = 'none';
+      document.getElementById('import-prio').value = 'med';
+      document.getElementById('import-modal').classList.add('show');
+    });
+
+    // Add task button
     const ab = document.createElement('button');
     ab.className = 'sm-btn';
     ab.style.marginRight = '.4rem';
@@ -394,7 +479,7 @@ function renderPhases(){
       setTimeout(() => document.getElementById('add-name').focus(), 60);
     });
 
-    head.appendChild(ta); head.appendChild(ab);
+    head.appendChild(ta); head.appendChild(ib); head.appendChild(ab);
     wrap.appendChild(head);
 
     const pbw = document.createElement('div');
@@ -493,77 +578,4 @@ document.getElementById('add-save').addEventListener('click', () => {
 document.getElementById('add-name').addEventListener('keydown', e => { if(e.key==='Enter') document.getElementById('add-save').click(); });
 document.getElementById('add-modal').addEventListener('click', e => { if(e.target===document.getElementById('add-modal')){ document.getElementById('add-modal').classList.remove('show'); addTargetPhaseId=null; } });
 
-document.getElementById('edit-cancel').addEventListener('click', () => { document.getElementById('edit-modal').classList.remove('show'); editTarget=null; });
-document.getElementById('edit-save').addEventListener('click', () => {
-  if (!editTarget) return;
-  const name = document.getElementById('edit-name').value.trim();
-  if (!name) { document.getElementById('edit-name').focus(); return; }
-  const newPhId = document.getElementById('edit-phase').value;
-  const oldPh   = state.phases.find(p => p.id===editTarget.phaseId);
-  const task    = oldPh.tasks[editTarget.idx];
-  task.name = name; task.detail = document.getElementById('edit-detail').value.trim();
-  task.prio = document.getElementById('edit-prio').value;
-  state.prioMap[task.id] = task.prio;
-  if (newPhId!==editTarget.phaseId){ oldPh.tasks.splice(editTarget.idx,1); state.phases.find(p=>p.id===newPhId).tasks.push(task); }
-  document.getElementById('edit-modal').classList.remove('show'); editTarget=null;
-  render(); scheduleSave();
-});
-document.getElementById('edit-modal').addEventListener('click', e => { if(e.target===document.getElementById('edit-modal')){ document.getElementById('edit-modal').classList.remove('show'); editTarget=null; } });
-
-document.getElementById('confirm-cancel').addEventListener('click', () => { document.getElementById('confirm-modal').classList.remove('show'); deleteTarget=null; });
-document.getElementById('confirm-ok').addEventListener('click', () => {
-  if (!deleteTarget) return;
-  const ph = state.phases.find(p => p.id===deleteTarget.phaseId);
-  ph.tasks.splice(deleteTarget.idx,1);
-  const ci = state.checked.indexOf(deleteTarget.tid);
-  if (ci>-1) state.checked.splice(ci,1);
-  delete state.prioMap[deleteTarget.tid];
-  document.getElementById('confirm-modal').classList.remove('show'); deleteTarget=null;
-  render(); updateStats(); scheduleSave();
-});
-document.getElementById('confirm-modal').addEventListener('click', e => { if(e.target===document.getElementById('confirm-modal')){ document.getElementById('confirm-modal').classList.remove('show'); deleteTarget=null; } });
-
-function makeDateRow(container, dv, lv){
-  const row = document.createElement('div'); row.className='de-row';
-  const ci = document.createElement('input'); ci.className='de-chip'; ci.type='text'; ci.placeholder='Jun 27'; ci.value=dv||'';
-  const li = document.createElement('input'); li.className='de-label'; li.type='text'; li.placeholder='Description...'; li.value=lv||'';
-  const db = document.createElement('button'); db.className='de-del'; db.type='button'; db.textContent='\u2715';
-  db.addEventListener('click', () => row.remove());
-  row.appendChild(ci); row.appendChild(li); row.appendChild(db);
-  container.appendChild(row); return row;
-}
-document.getElementById('open-dates-editor').addEventListener('click', () => {
-  const c = document.getElementById('dates-editor-rows'); c.innerHTML='';
-  (state.keyDates||[]).forEach(d => makeDateRow(c, d.date, d.label));
-  document.getElementById('dates-modal').classList.add('show');
-});
-document.getElementById('add-de-btn').addEventListener('click', () => { makeDateRow(document.getElementById('dates-editor-rows'),'','').querySelector('input').focus(); });
-document.getElementById('dates-cancel').addEventListener('click', () => document.getElementById('dates-modal').classList.remove('show'));
-document.getElementById('dates-save').addEventListener('click', () => {
-  const nd = [];
-  document.querySelectorAll('#dates-editor-rows .de-row').forEach(row => {
-    const ins = row.querySelectorAll('input');
-    const d=ins[0].value.trim(), l=ins[1].value.trim();
-    if(d&&l) nd.push({date:d, label:l, movein:l.toLowerCase().includes('move-in')||l.toLowerCase().includes('move in')});
-  });
-  state.keyDates = nd;
-  document.getElementById('dates-modal').classList.remove('show');
-  render(); scheduleSave();
-});
-document.getElementById('dates-modal').addEventListener('click', e => { if(e.target===document.getElementById('dates-modal')) document.getElementById('dates-modal').classList.remove('show'); });
-document.getElementById('dates-toggle').addEventListener('click', () => {
-  const b=document.getElementById('dates-body'), c=document.getElementById('dchev');
-  const h=b.style.display==='none'; b.style.display=h?'':'none'; c.classList.toggle('open',h);
-});
-
-// ── INIT ──────────────────────────────────────────────────────────────────────
-async function init(){
-  document.getElementById('sstatus').textContent = 'Loading...';
-  await loadCloud();
-  render();
-  setInterval(async () => { if (!isSaving){ await loadCloud(); render(); } }, 6000);
-}
-init();
-</script>
-</body>
-</html>
+document.getElementById('edit-cancel').addEventListener('click', () => { document.getElementById('edit-modal').classList
