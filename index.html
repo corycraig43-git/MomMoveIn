@@ -104,7 +104,7 @@ main{max-width:780px;margin:0 auto;padding:1.75rem 1rem 4rem;}
 .add-de-btn:hover{background:var(--text);color:#fff;border-color:var(--text);}
 .toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:#16a34a;color:#fff;font-size:.82rem;padding:.5rem 1.4rem;border-radius:999px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:200;white-space:nowrap;}
 .toast.show{opacity:1;}
-.toast.error{background:#991B1B;}
+.toast.err{background:#991B1B;}
 footer{text-align:center;font-size:.75rem;color:var(--muted);padding:1.5rem 1rem 3rem;}
 @media(max-width:480px){.pdates{display:none;}.sval{font-size:1.5rem;}}
 </style>
@@ -128,10 +128,7 @@ footer{text-align:center;font-size:.75rem;color:var(--muted);padding:1.5rem 1rem
   </div>
   <div class="dates-card">
     <div class="dates-head">
-      <div class="dates-head-left" id="dates-toggle">
-        <span>Key dates</span>
-        <span class="dchev open" id="dchev">▼</span>
-      </div>
+      <div class="dates-head-left" id="dates-toggle"><span>Key dates</span><span class="dchev open" id="dchev">▼</span></div>
       <button class="sm-btn" id="open-dates-editor">Edit dates</button>
     </div>
     <div id="dates-body"></div>
@@ -152,11 +149,7 @@ footer{text-align:center;font-size:.75rem;color:var(--muted);padding:1.5rem 1rem
     <label class="flabel">Details <span style="font-weight:400;color:#9ca3af">(optional)</span></label>
     <textarea class="ftextarea" id="add-detail" placeholder="Any extra notes..."></textarea>
     <label class="flabel">Priority</label>
-    <select class="fselect" id="add-prio">
-      <option value="high">High</option>
-      <option value="med" selected>Med</option>
-      <option value="low">Low</option>
-    </select>
+    <select class="fselect" id="add-prio"><option value="high">High</option><option value="med" selected>Med</option><option value="low">Low</option></select>
     <div class="modal-actions">
       <button class="btn" id="add-cancel">Cancel</button>
       <button class="btn primary" id="add-save">Add task</button>
@@ -168,18 +161,11 @@ footer{text-align:center;font-size:.75rem;color:var(--muted);padding:1.5rem 1rem
 <div class="modal-bg" id="edit-modal">
   <div class="modal">
     <h3>Edit task</h3>
-    <label class="flabel">Task name</label>
-    <input class="finput" type="text" id="edit-name"/>
-    <label class="flabel">Details</label>
-    <textarea class="ftextarea" id="edit-detail"></textarea>
-    <label class="flabel">Phase</label>
-    <select class="fselect" id="edit-phase"></select>
+    <label class="flabel">Task name</label><input class="finput" type="text" id="edit-name"/>
+    <label class="flabel">Details</label><textarea class="ftextarea" id="edit-detail"></textarea>
+    <label class="flabel">Phase</label><select class="fselect" id="edit-phase"></select>
     <label class="flabel">Priority</label>
-    <select class="fselect" id="edit-prio">
-      <option value="high">High</option>
-      <option value="med">Med</option>
-      <option value="low">Low</option>
-    </select>
+    <select class="fselect" id="edit-prio"><option value="high">High</option><option value="med">Med</option><option value="low">Low</option></select>
     <div class="modal-actions">
       <button class="btn" id="edit-cancel">Cancel</button>
       <button class="btn primary" id="edit-save">Save</button>
@@ -187,7 +173,7 @@ footer{text-align:center;font-size:.75rem;color:var(--muted);padding:1.5rem 1rem
   </div>
 </div>
 
-<!-- DELETE CONFIRM MODAL -->
+<!-- DELETE MODAL -->
 <div class="modal-bg" id="confirm-modal">
   <div class="modal">
     <h3>Delete this task?</h3>
@@ -203,7 +189,7 @@ footer{text-align:center;font-size:.75rem;color:var(--muted);padding:1.5rem 1rem
 <div class="modal-bg" id="dates-modal">
   <div class="modal">
     <h3>Edit key dates</h3>
-    <p class="modal-sub">Update dates or labels, add or remove rows. Rows containing "move-in" highlight green automatically.</p>
+    <p class="modal-sub">Update dates or labels. Rows with "move-in" highlight green automatically.</p>
     <div id="dates-editor-rows"></div>
     <button class="add-de-btn" id="add-de-btn">+ Add a date</button>
     <div class="modal-actions">
@@ -214,15 +200,12 @@ footer{text-align:center;font-size:.75rem;color:var(--muted);padding:1.5rem 1rem
 </div>
 
 <script>
+// ── CONFIG ──────────────────────────────────────────────────────────────────
 const SB_URL = 'https://lpyikpkymyctkvblhrqy.supabase.co';
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxweWlrcGt5bXljdGt2YmxocnF5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4NzUzNzEsImV4cCI6MjA5MjQ1MTM3MX0.T1bAt5odIDzYA0L8oXVbdf5FPIYCMJ7_YkTBpRcLxio';
 const POLL_MS = 6000;
-const SB_HEADERS = {
-  'Content-Type': 'application/json',
-  'apikey': SB_KEY,
-  'Authorization': 'Bearer ' + SB_KEY,
-};
 
+// ── DEFAULT DATA ─────────────────────────────────────────────────────────────
 const DEFAULT_DATES = [
   {date:'Apr 25',label:"Visit Fran — discuss move plans & choose paint colors",movein:false},
   {date:'May 1', label:'Phase 1 deadline: planning & decluttering complete',movein:false},
@@ -233,7 +216,7 @@ const DEFAULT_DATES = [
 ];
 const DEFAULT_PHASES = [
   {id:'p1',label:'Phase 1',title:'Planning & Decluttering',dates:'Now – May 1',pill:'#EBF5FB',pillText:'#1a5276',bar:'#2980B9',tasks:[
-    {id:'t1',name:'Clean out both closets',detail:"Sort into keep, donate, trash — free up space.",prio:'high'},
+    {id:'t1',name:'Clean out both closets',detail:'Sort into keep, donate, trash — free up space.',prio:'high'},
     {id:'t2',name:'Empty hall closet',detail:'Clear for general storage or extra linens.',prio:'high'},
     {id:'t3',name:'Relocate hat supplies',detail:'Move to long-term or alternate storage area.',prio:'med'},
     {id:'t4',name:'Clean out garage shelves',detail:'Clear shelves to create space for storage tubs.',prio:'med'},
@@ -258,247 +241,241 @@ const DEFAULT_PHASES = [
   ]},
 ];
 
+// ── STATE ────────────────────────────────────────────────────────────────────
 let state = {
   checked:[], collapsed:[], phases:JSON.parse(JSON.stringify(DEFAULT_PHASES)),
   prioMap:{}, keyDates:JSON.parse(JSON.stringify(DEFAULT_DATES))
 };
-let saveTimer=null, isSaving=false;
-let dragSrc=null, dragPhaseId=null;
-let editTarget=null, deleteTarget=null, addTargetPhaseId=null;
+let isSaving = false;
+let saveTimer = null;
+let dragSrc = null, dragPhaseId = null;
+let editTarget = null, deleteTarget = null, addTargetPhaseId = null;
 
-function uid(){ return 't'+Date.now()+Math.random().toString(36).slice(2,6); }
+function uid(){ return 't' + Date.now() + Math.random().toString(36).slice(2,6); }
 
-// ---- SUPABASE: load and save ----
-let rowCreatedAt = '2026-04-22%2020%3A23%3A15.563304%2B00';
-let lastLoadedData = '';
+// ── SUPABASE ─────────────────────────────────────────────────────────────────
+const SB_H = { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Content-Type': 'application/json' };
 
 async function loadCloud(){
   try {
-    const r = await fetch(`${SB_URL}/rest/v1/state?select=data,created_at&limit=1&order=created_at.asc&_=${Date.now()}`, {
-      headers: {
-        'apikey': SB_KEY,
-        'Authorization': 'Bearer ' + SB_KEY,
-        'Cache-Control': 'no-cache'
-      }
-    });
+    const r = await fetch(SB_URL + '/rest/v1/state?select=data&limit=1&order=created_at.asc', { headers: SB_H });
     const rows = await r.json();
-    if(Array.isArray(rows) && rows.length > 0 && rows[0].data && rows[0].data !== '{}'){
-      const incoming = rows[0].data;
-      if(incoming !== lastLoadedData){
-        lastLoadedData = incoming;
-        const saved = JSON.parse(incoming);
-        state = {
-          checked:   saved.checked   || [],
-          collapsed: saved.collapsed || [],
-          phases:    saved.phases    || JSON.parse(JSON.stringify(DEFAULT_PHASES)),
-          prioMap:   saved.prioMap   || {},
-          keyDates:  saved.keyDates  || JSON.parse(JSON.stringify(DEFAULT_DATES)),
-        };
-      }
+    if (Array.isArray(rows) && rows.length > 0 && rows[0].data && rows[0].data.length > 2) {
+      const saved = JSON.parse(rows[0].data);
+      state = {
+        checked:   saved.checked   || [],
+        collapsed: saved.collapsed || [],
+        phases:    saved.phases    || JSON.parse(JSON.stringify(DEFAULT_PHASES)),
+        prioMap:   saved.prioMap   || {},
+        keyDates:  saved.keyDates  || JSON.parse(JSON.stringify(DEFAULT_DATES)),
+      };
       setSynced(true);
       return true;
     }
     setSynced(true);
     return false;
-  } catch(e){
-    console.error('loadCloud error:', e);
+  } catch(e) {
+    console.error('Load error:', e);
     setSynced(false);
     return false;
   }
 }
 
 async function saveCloud(){
-  if(isSaving) return;
+  if (isSaving) return;
   isSaving = true;
   setSynced(false);
   try {
     const dataStr = JSON.stringify(state);
-    // Use the save_state SQL function — always updates the single row
-    const r = await fetch(`${SB_URL}/rest/v1/rpc/save_state`, {
+    // Call the save_state SQL function — does UPDATE state SET data = $1
+    const r = await fetch(SB_URL + '/rest/v1/rpc/save_state', {
       method: 'POST',
-      headers: {
-        'apikey': SB_KEY,
-        'Authorization': 'Bearer ' + SB_KEY,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({state_data: dataStr})
+      headers: SB_H,
+      body: JSON.stringify({ state_data: dataStr })
     });
-    if(r.ok){
-      lastLoadedData = dataStr;
+    if (r.ok) {
       setSynced(true);
-      showToast('Saved ✓', false);
+      toast('Saved \u2713');
     } else {
-      const err = await r.text();
-      console.error('save_state RPC failed:', r.status, err);
-      showToast('Save failed: ' + r.status, true);
+      const t = await r.text();
+      console.error('save_state failed:', r.status, t);
+      toast('Save failed ' + r.status, true);
       setSynced(false);
     }
-  } catch(e){
+  } catch(e) {
     console.error('saveCloud error:', e);
-    showToast('Save failed', true);
+    toast('Save failed', true);
     setSynced(false);
   }
   isSaving = false;
 }
 
+function scheduleSave(){ clearTimeout(saveTimer); saveTimer = setTimeout(saveCloud, 800); }
+
 function setSynced(ok){
-  document.getElementById('sdot').className='sdot'+(ok?' ok':'');
-  document.getElementById('sstatus').textContent=ok?'Synced':'Saving...';
-}
-function scheduleSave(){ clearTimeout(saveTimer); saveTimer=setTimeout(saveCloud,800); }
-function showToast(msg, isError){
-  const t=document.getElementById('toast');
-  t.textContent=msg;
-  t.className='toast'+(isError?' error':'')+' show';
-  setTimeout(()=>t.classList.remove('show'),2500);
+  document.getElementById('sdot').className = 'sdot' + (ok ? ' ok' : '');
+  document.getElementById('sstatus').textContent = ok ? 'Synced' : 'Saving...';
 }
 
-function cyclePrio(p){return p==='high'?'med':p==='med'?'low':'high';}
-function prioLabel(p){return p==='high'?'High':p==='med'?'Med':'Low';}
-function prioClass(p){return 'pbadge '+(p==='high'?'ph':p==='med'?'pm':'pl');}
+function toast(msg, err){
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast' + (err ? ' err' : '') + ' show';
+  setTimeout(() => el.classList.remove('show'), 2500);
+}
+
+// ── HELPERS ──────────────────────────────────────────────────────────────────
+function cyclePrio(p){ return p==='high'?'med':p==='med'?'low':'high'; }
+function prioLabel(p){ return p==='high'?'High':p==='med'?'Med':'Low'; }
+function prioClass(p){ return 'pbadge '+(p==='high'?'ph':p==='med'?'pm':'pl'); }
 
 function updateStats(){
-  let total=0,done=0;
-  state.phases.forEach(ph=>ph.tasks.forEach(t=>{total++;if(state.checked.includes(t.id))done++;}));
-  document.getElementById('s-total').textContent=total;
-  document.getElementById('s-done').textContent=done;
-  document.getElementById('s-pct').textContent=total?Math.round(done/total*100)+'%':'0%';
+  let total=0, done=0;
+  state.phases.forEach(ph => ph.tasks.forEach(t => { total++; if(state.checked.includes(t.id)) done++; }));
+  document.getElementById('s-total').textContent = total;
+  document.getElementById('s-done').textContent  = done;
+  document.getElementById('s-pct').textContent   = total ? Math.round(done/total*100)+'%' : '0%';
 }
 
 function updateCountdown(){
-  const mi=(state.keyDates||[]).find(d=>d.movein);
-  if(!mi){document.getElementById('countdown').textContent='Move-in date TBD';return;}
-  const days=Math.ceil((new Date('2026-'+mi.date.replace(' ','-'))-new Date())/86400000);
-  document.getElementById('countdown').textContent=days>0?days+' days until move-in':days===0?'Move-in day!':'Fran has moved in!';
+  const mi = (state.keyDates||[]).find(d => d.movein);
+  if (!mi) { document.getElementById('countdown').textContent = 'Move-in date TBD'; return; }
+  const days = Math.ceil((new Date('2026-'+mi.date.replace(' ','-')) - new Date()) / 86400000);
+  document.getElementById('countdown').textContent = days>0 ? days+' days until move-in' : days===0 ? 'Move-in day!' : 'Fran has moved in!';
 }
 
+// ── RENDER ────────────────────────────────────────────────────────────────────
 function renderDates(){
-  const body=document.getElementById('dates-body');
-  body.innerHTML='';
-  (state.keyDates||[]).forEach(d=>{
-    const row=document.createElement('div');
-    row.className='date-row';
-    row.innerHTML=`<span class="dchip${d.movein?' movein':''}">${d.date}</span><span${d.movein?' style="font-weight:500"':''}>${d.label}</span>`;
+  const body = document.getElementById('dates-body');
+  body.innerHTML = '';
+  (state.keyDates||[]).forEach(d => {
+    const row = document.createElement('div');
+    row.className = 'date-row';
+    row.innerHTML = '<span class="dchip'+(d.movein?' movein':'')+'">'+d.date+'</span><span'+(d.movein?' style="font-weight:500"':'')+'>'+d.label+'</span>';
     body.appendChild(row);
   });
 }
 
 function renderPhases(){
-  const root=document.getElementById('phases-root');
-  root.innerHTML='';
-  const collSet=new Set(state.collapsed);
-  const chkSet=new Set(state.checked);
+  const root = document.getElementById('phases-root');
+  root.innerHTML = '';
+  const collSet = new Set(state.collapsed);
+  const chkSet  = new Set(state.checked);
 
-  state.phases.forEach(ph=>{
-    const total=ph.tasks.length;
-    const done=ph.tasks.filter(t=>chkSet.has(t.id)).length;
-    const pct=total?Math.round(done/total*100):0;
-    const isOpen=!collSet.has(ph.id);
-    const wrap=document.createElement('div');
-    wrap.className='phase';
+  state.phases.forEach(ph => {
+    const total  = ph.tasks.length;
+    const done   = ph.tasks.filter(t => chkSet.has(t.id)).length;
+    const pct    = total ? Math.round(done/total*100) : 0;
+    const isOpen = !collSet.has(ph.id);
+    const wrap   = document.createElement('div');
+    wrap.className = 'phase';
 
-    const head=document.createElement('div');
-    head.className='phase-head';
-    const titleArea=document.createElement('div');
-    titleArea.className='phase-title-area';
-    titleArea.innerHTML=`
-      <span class="ppill" style="background:${ph.pill};color:${ph.pillText}">${ph.label}</span>
-      <span class="ptitle">${ph.title}</span>
-      <span class="pdates">${ph.dates}</span>
-      <span class="pcount">${done}/${total}</span>
-      <span class="pchev ${isOpen?'open':''}">▼</span>`;
-    titleArea.addEventListener('click',()=>{
-      const i=state.collapsed.indexOf(ph.id);
-      if(i>-1)state.collapsed.splice(i,1);else state.collapsed.push(ph.id);
-      renderPhases();updateStats();scheduleSave();
+    const head = document.createElement('div');
+    head.className = 'phase-head';
+
+    const ta = document.createElement('div');
+    ta.className = 'phase-title-area';
+    ta.innerHTML = '<span class="ppill" style="background:'+ph.pill+';color:'+ph.pillText+'">'+ph.label+'</span>'
+      +'<span class="ptitle">'+ph.title+'</span>'
+      +'<span class="pdates">'+ph.dates+'</span>'
+      +'<span class="pcount">'+done+'/'+total+'</span>'
+      +'<span class="pchev '+(isOpen?'open':'')+'">▼</span>';
+    ta.addEventListener('click', () => {
+      const i = state.collapsed.indexOf(ph.id);
+      if (i>-1) state.collapsed.splice(i,1); else state.collapsed.push(ph.id);
+      renderPhases(); updateStats(); scheduleSave();
     });
-    const addBtn=document.createElement('button');
-    addBtn.className='sm-btn';
-    addBtn.style.marginRight='.4rem';
-    addBtn.textContent='+ Add task';
-    addBtn.addEventListener('click',e=>{
+
+    const ab = document.createElement('button');
+    ab.className = 'sm-btn';
+    ab.style.marginRight = '.4rem';
+    ab.textContent = '+ Add task';
+    ab.addEventListener('click', e => {
       e.stopPropagation();
-      addTargetPhaseId=ph.id;
-      document.getElementById('add-modal-sub').textContent='Adding to '+ph.label+': '+ph.title;
-      document.getElementById('add-name').value='';
-      document.getElementById('add-detail').value='';
-      document.getElementById('add-prio').value='med';
+      addTargetPhaseId = ph.id;
+      document.getElementById('add-modal-sub').textContent = 'Adding to '+ph.label+': '+ph.title;
+      document.getElementById('add-name').value = '';
+      document.getElementById('add-detail').value = '';
+      document.getElementById('add-prio').value = 'med';
       document.getElementById('add-modal').classList.add('show');
-      setTimeout(()=>document.getElementById('add-name').focus(),60);
+      setTimeout(() => document.getElementById('add-name').focus(), 60);
     });
-    head.appendChild(titleArea);
-    head.appendChild(addBtn);
+
+    head.appendChild(ta);
+    head.appendChild(ab);
     wrap.appendChild(head);
 
-    const pbw=document.createElement('div');
-    pbw.className='pbar-wrap';
-    pbw.innerHTML=`<div class="pbar" style="width:${pct}%;background:${ph.bar}"></div>`;
+    const pbw = document.createElement('div');
+    pbw.className = 'pbar-wrap';
+    pbw.innerHTML = '<div class="pbar" style="width:'+pct+'%;background:'+ph.bar+'"></div>';
     wrap.appendChild(pbw);
 
-    if(isOpen){
-      const tl=document.createElement('div');
-      tl.className='task-list';
-      ph.tasks.forEach((t,idx)=>{
-        const isDone=chkSet.has(t.id);
-        const curPrio=state.prioMap[t.id]||t.prio;
-        const row=document.createElement('div');
-        row.className='task'+(isDone?' done':'');
-        row.draggable=true;
-        row.innerHTML=`
-          <span class="dhandle">⠿</span>
-          <div class="cb"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5 4.5-5" stroke="white" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-          <div class="tbody">
-            <div class="tname">${t.name}</div>
-            <div class="tdetail">${t.detail||''}</div>
-          </div>
-          <div class="task-actions">
-            <span class="${prioClass(curPrio)}">${prioLabel(curPrio)}</span>
-            <button class="icon-btn edit-btn" title="Edit">✎</button>
-            <button class="icon-btn del delete-btn" title="Delete">✕</button>
-          </div>`;
-        row.querySelector('.cb').addEventListener('click',e=>{
+    if (isOpen) {
+      const tl = document.createElement('div');
+      tl.className = 'task-list';
+
+      ph.tasks.forEach((t, idx) => {
+        const isDone  = chkSet.has(t.id);
+        const curPrio = state.prioMap[t.id] || t.prio;
+        const row     = document.createElement('div');
+        row.className = 'task'+(isDone?' done':'');
+        row.draggable = true;
+        row.innerHTML =
+          '<span class="dhandle">⠿</span>'
+          +'<div class="cb"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5 4.5-5" stroke="white" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>'
+          +'<div class="tbody"><div class="tname">'+t.name+'</div><div class="tdetail">'+(t.detail||'')+'</div></div>'
+          +'<div class="task-actions">'
+          +'<span class="'+prioClass(curPrio)+'">'+prioLabel(curPrio)+'</span>'
+          +'<button class="icon-btn edit-btn" title="Edit">\u270e</button>'
+          +'<button class="icon-btn del delete-btn" title="Delete">\u2715</button>'
+          +'</div>';
+
+        row.querySelector('.cb').addEventListener('click', e => {
           e.stopPropagation();
-          const ci=state.checked.indexOf(t.id);
-          if(ci>-1)state.checked.splice(ci,1);else state.checked.push(t.id);
-          renderPhases();updateStats();scheduleSave();
+          const ci = state.checked.indexOf(t.id);
+          if (ci>-1) state.checked.splice(ci,1); else state.checked.push(t.id);
+          renderPhases(); updateStats(); scheduleSave();
         });
-        row.querySelector('.pbadge').addEventListener('click',e=>{
+        row.querySelector('.pbadge').addEventListener('click', e => {
           e.stopPropagation();
-          state.prioMap[t.id]=cyclePrio(state.prioMap[t.id]||t.prio);
-          renderPhases();scheduleSave();
+          state.prioMap[t.id] = cyclePrio(state.prioMap[t.id]||t.prio);
+          renderPhases(); scheduleSave();
         });
-        row.querySelector('.edit-btn').addEventListener('click',e=>{
+        row.querySelector('.edit-btn').addEventListener('click', e => {
           e.stopPropagation();
-          editTarget={phaseId:ph.id,idx};
-          document.getElementById('edit-name').value=t.name;
-          document.getElementById('edit-detail').value=t.detail||'';
-          document.getElementById('edit-prio').value=state.prioMap[t.id]||t.prio;
-          document.getElementById('edit-phase').innerHTML=state.phases.map(p=>
-            `<option value="${p.id}"${p.id===ph.id?' selected':''}>${p.label}: ${p.title}</option>`).join('');
+          editTarget = {phaseId:ph.id, idx};
+          document.getElementById('edit-name').value   = t.name;
+          document.getElementById('edit-detail').value = t.detail||'';
+          document.getElementById('edit-prio').value   = state.prioMap[t.id]||t.prio;
+          document.getElementById('edit-phase').innerHTML = state.phases.map(p =>
+            '<option value="'+p.id+'"'+(p.id===ph.id?' selected':'')+'>'+p.label+': '+p.title+'</option>').join('');
           document.getElementById('edit-modal').classList.add('show');
-          setTimeout(()=>document.getElementById('edit-name').focus(),60);
+          setTimeout(() => document.getElementById('edit-name').focus(), 60);
         });
-        row.querySelector('.delete-btn').addEventListener('click',e=>{
+        row.querySelector('.delete-btn').addEventListener('click', e => {
           e.stopPropagation();
-          deleteTarget={phaseId:ph.id,idx,tid:t.id,name:t.name};
-          document.getElementById('confirm-msg').textContent=`"${t.name}" will be permanently removed.`;
+          deleteTarget = {phaseId:ph.id, idx, tid:t.id, name:t.name};
+          document.getElementById('confirm-msg').textContent = '"'+t.name+'" will be permanently removed.';
           document.getElementById('confirm-modal').classList.add('show');
         });
-        row.addEventListener('dragstart',e=>{
-          dragSrc=idx;dragPhaseId=ph.id;
-          setTimeout(()=>row.classList.add('dragging'),0);
-          e.dataTransfer.effectAllowed='move';
+
+        row.addEventListener('dragstart', e => {
+          dragSrc = idx; dragPhaseId = ph.id;
+          setTimeout(() => row.classList.add('dragging'), 0);
+          e.dataTransfer.effectAllowed = 'move';
         });
-        row.addEventListener('dragend',()=>document.querySelectorAll('.task').forEach(r=>r.classList.remove('dragging','dragover')));
-        row.addEventListener('dragover',e=>{e.preventDefault();row.classList.add('dragover');});
-        row.addEventListener('dragleave',()=>row.classList.remove('dragover'));
-        row.addEventListener('drop',e=>{
-          e.preventDefault();row.classList.remove('dragover');
-          if(dragPhaseId!==ph.id||dragSrc===null||dragSrc===idx)return;
-          const[moved]=ph.tasks.splice(dragSrc,1);
+        row.addEventListener('dragend', () => document.querySelectorAll('.task').forEach(r => r.classList.remove('dragging','dragover')));
+        row.addEventListener('dragover', e => { e.preventDefault(); row.classList.add('dragover'); });
+        row.addEventListener('dragleave', () => row.classList.remove('dragover'));
+        row.addEventListener('drop', e => {
+          e.preventDefault(); row.classList.remove('dragover');
+          if (dragPhaseId!==ph.id||dragSrc===null||dragSrc===idx) return;
+          const [moved] = ph.tasks.splice(dragSrc,1);
           ph.tasks.splice(idx,0,moved);
-          dragSrc=null;renderPhases();updateStats();scheduleSave();
+          dragSrc = null;
+          renderPhases(); updateStats(); scheduleSave();
         });
+
         tl.appendChild(row);
       });
       wrap.appendChild(tl);
@@ -508,130 +485,107 @@ function renderPhases(){
   updateStats();
 }
 
-function render(){renderDates();renderPhases();updateCountdown();}
+function render(){ renderDates(); renderPhases(); updateCountdown(); }
 
-// ADD
-document.getElementById('add-cancel').addEventListener('click',()=>{
-  document.getElementById('add-modal').classList.remove('show');addTargetPhaseId=null;
+// ── ADD TASK ──────────────────────────────────────────────────────────────────
+document.getElementById('add-cancel').addEventListener('click', () => {
+  document.getElementById('add-modal').classList.remove('show'); addTargetPhaseId=null;
 });
-document.getElementById('add-save').addEventListener('click',()=>{
-  const name=document.getElementById('add-name').value.trim();
-  if(!name){document.getElementById('add-name').focus();return;}
-  const ph=state.phases.find(p=>p.id===addTargetPhaseId);
-  if(!ph)return;
-  ph.tasks.push({id:uid(),name,detail:document.getElementById('add-detail').value.trim(),prio:document.getElementById('add-prio').value});
-  document.getElementById('add-modal').classList.remove('show');addTargetPhaseId=null;
-  render();scheduleSave();
+document.getElementById('add-save').addEventListener('click', () => {
+  const name = document.getElementById('add-name').value.trim();
+  if (!name) { document.getElementById('add-name').focus(); return; }
+  const ph = state.phases.find(p => p.id===addTargetPhaseId);
+  if (!ph) return;
+  ph.tasks.push({id:uid(), name, detail:document.getElementById('add-detail').value.trim(), prio:document.getElementById('add-prio').value});
+  document.getElementById('add-modal').classList.remove('show'); addTargetPhaseId=null;
+  render(); scheduleSave();
 });
-document.getElementById('add-name').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('add-save').click();});
-document.getElementById('add-modal').addEventListener('click',e=>{
-  if(e.target===document.getElementById('add-modal')){document.getElementById('add-modal').classList.remove('show');addTargetPhaseId=null;}
-});
-
-// EDIT
-document.getElementById('edit-cancel').addEventListener('click',()=>{
-  document.getElementById('edit-modal').classList.remove('show');editTarget=null;
-});
-document.getElementById('edit-save').addEventListener('click',()=>{
-  if(!editTarget)return;
-  const name=document.getElementById('edit-name').value.trim();
-  if(!name){document.getElementById('edit-name').focus();return;}
-  const newPhId=document.getElementById('edit-phase').value;
-  const oldPh=state.phases.find(p=>p.id===editTarget.phaseId);
-  const task=oldPh.tasks[editTarget.idx];
-  task.name=name;task.detail=document.getElementById('edit-detail').value.trim();
-  task.prio=document.getElementById('edit-prio').value;
-  state.prioMap[task.id]=task.prio;
-  if(newPhId!==editTarget.phaseId){
-    oldPh.tasks.splice(editTarget.idx,1);
-    state.phases.find(p=>p.id===newPhId).tasks.push(task);
-  }
-  document.getElementById('edit-modal').classList.remove('show');editTarget=null;
-  render();scheduleSave();
-});
-document.getElementById('edit-modal').addEventListener('click',e=>{
-  if(e.target===document.getElementById('edit-modal')){document.getElementById('edit-modal').classList.remove('show');editTarget=null;}
+document.getElementById('add-name').addEventListener('keydown', e => { if(e.key==='Enter') document.getElementById('add-save').click(); });
+document.getElementById('add-modal').addEventListener('click', e => {
+  if(e.target===document.getElementById('add-modal')){ document.getElementById('add-modal').classList.remove('show'); addTargetPhaseId=null; }
 });
 
-// DELETE
-document.getElementById('confirm-cancel').addEventListener('click',()=>{
-  document.getElementById('confirm-modal').classList.remove('show');deleteTarget=null;
+// ── EDIT TASK ─────────────────────────────────────────────────────────────────
+document.getElementById('edit-cancel').addEventListener('click', () => { document.getElementById('edit-modal').classList.remove('show'); editTarget=null; });
+document.getElementById('edit-save').addEventListener('click', () => {
+  if (!editTarget) return;
+  const name = document.getElementById('edit-name').value.trim();
+  if (!name) { document.getElementById('edit-name').focus(); return; }
+  const newPhId = document.getElementById('edit-phase').value;
+  const oldPh   = state.phases.find(p => p.id===editTarget.phaseId);
+  const task    = oldPh.tasks[editTarget.idx];
+  task.name     = name;
+  task.detail   = document.getElementById('edit-detail').value.trim();
+  task.prio     = document.getElementById('edit-prio').value;
+  state.prioMap[task.id] = task.prio;
+  if (newPhId!==editTarget.phaseId){ oldPh.tasks.splice(editTarget.idx,1); state.phases.find(p=>p.id===newPhId).tasks.push(task); }
+  document.getElementById('edit-modal').classList.remove('show'); editTarget=null;
+  render(); scheduleSave();
 });
-document.getElementById('confirm-ok').addEventListener('click',()=>{
-  if(!deleteTarget)return;
-  const ph=state.phases.find(p=>p.id===deleteTarget.phaseId);
+document.getElementById('edit-modal').addEventListener('click', e => {
+  if(e.target===document.getElementById('edit-modal')){ document.getElementById('edit-modal').classList.remove('show'); editTarget=null; }
+});
+
+// ── DELETE TASK ───────────────────────────────────────────────────────────────
+document.getElementById('confirm-cancel').addEventListener('click', () => { document.getElementById('confirm-modal').classList.remove('show'); deleteTarget=null; });
+document.getElementById('confirm-ok').addEventListener('click', () => {
+  if (!deleteTarget) return;
+  const ph = state.phases.find(p => p.id===deleteTarget.phaseId);
   ph.tasks.splice(deleteTarget.idx,1);
-  const ci=state.checked.indexOf(deleteTarget.tid);
-  if(ci>-1)state.checked.splice(ci,1);
+  const ci = state.checked.indexOf(deleteTarget.tid);
+  if (ci>-1) state.checked.splice(ci,1);
   delete state.prioMap[deleteTarget.tid];
-  document.getElementById('confirm-modal').classList.remove('show');deleteTarget=null;
-  render();updateStats();scheduleSave();
+  document.getElementById('confirm-modal').classList.remove('show'); deleteTarget=null;
+  render(); updateStats(); scheduleSave();
 });
-document.getElementById('confirm-modal').addEventListener('click',e=>{
-  if(e.target===document.getElementById('confirm-modal')){document.getElementById('confirm-modal').classList.remove('show');deleteTarget=null;}
+document.getElementById('confirm-modal').addEventListener('click', e => {
+  if(e.target===document.getElementById('confirm-modal')){ document.getElementById('confirm-modal').classList.remove('show'); deleteTarget=null; }
 });
 
-// DATES EDITOR
-function makeDateEditorRow(container,dateVal,labelVal){
-  const row=document.createElement('div');row.className='de-row';
-  const chipInp=document.createElement('input');chipInp.className='de-chip';chipInp.type='text';chipInp.placeholder='Jun 27';chipInp.value=dateVal||'';
-  const labelInp=document.createElement('input');labelInp.className='de-label';labelInp.type='text';labelInp.placeholder='Description...';labelInp.value=labelVal||'';
-  const delBtn=document.createElement('button');delBtn.className='de-del';delBtn.type='button';delBtn.textContent='✕';
-  delBtn.addEventListener('click',()=>row.remove());
-  row.appendChild(chipInp);row.appendChild(labelInp);row.appendChild(delBtn);
-  container.appendChild(row);return row;
+// ── DATES EDITOR ──────────────────────────────────────────────────────────────
+function makeDateRow(container, dv, lv){
+  const row = document.createElement('div');
+  row.className = 'de-row';
+  const ci = document.createElement('input'); ci.className='de-chip'; ci.type='text'; ci.placeholder='Jun 27'; ci.value=dv||'';
+  const li = document.createElement('input'); li.className='de-label'; li.type='text'; li.placeholder='Description...'; li.value=lv||'';
+  const db = document.createElement('button'); db.className='de-del'; db.type='button'; db.textContent='\u2715';
+  db.addEventListener('click', () => row.remove());
+  row.appendChild(ci); row.appendChild(li); row.appendChild(db);
+  container.appendChild(row);
+  return row;
 }
-document.getElementById('open-dates-editor').addEventListener('click',()=>{
-  const c=document.getElementById('dates-editor-rows');c.innerHTML='';
-  (state.keyDates||[]).forEach(d=>makeDateEditorRow(c,d.date,d.label));
+document.getElementById('open-dates-editor').addEventListener('click', () => {
+  const c = document.getElementById('dates-editor-rows'); c.innerHTML='';
+  (state.keyDates||[]).forEach(d => makeDateRow(c, d.date, d.label));
   document.getElementById('dates-modal').classList.add('show');
 });
-document.getElementById('add-de-btn').addEventListener('click',()=>{
-  const row=makeDateEditorRow(document.getElementById('dates-editor-rows'),'','');
-  row.querySelector('input').focus();
+document.getElementById('add-de-btn').addEventListener('click', () => {
+  makeDateRow(document.getElementById('dates-editor-rows'),'','').querySelector('input').focus();
 });
-document.getElementById('dates-cancel').addEventListener('click',()=>document.getElementById('dates-modal').classList.remove('show'));
-document.getElementById('dates-save').addEventListener('click',()=>{
-  const newDates=[];
-  document.querySelectorAll('#dates-editor-rows .de-row').forEach(row=>{
-    const inputs=row.querySelectorAll('input');
-    const d=inputs[0].value.trim(),l=inputs[1].value.trim();
-    if(d&&l)newDates.push({date:d,label:l,movein:l.toLowerCase().includes('move-in')||l.toLowerCase().includes('move in')});
+document.getElementById('dates-cancel').addEventListener('click', () => document.getElementById('dates-modal').classList.remove('show'));
+document.getElementById('dates-save').addEventListener('click', () => {
+  const nd = [];
+  document.querySelectorAll('#dates-editor-rows .de-row').forEach(row => {
+    const ins = row.querySelectorAll('input');
+    const d=ins[0].value.trim(), l=ins[1].value.trim();
+    if(d&&l) nd.push({date:d, label:l, movein:l.toLowerCase().includes('move-in')||l.toLowerCase().includes('move in')});
   });
-  state.keyDates=newDates;
+  state.keyDates = nd;
   document.getElementById('dates-modal').classList.remove('show');
-  render();scheduleSave();
+  render(); scheduleSave();
 });
-document.getElementById('dates-modal').addEventListener('click',e=>{
-  if(e.target===document.getElementById('dates-modal'))document.getElementById('dates-modal').classList.remove('show');
+document.getElementById('dates-modal').addEventListener('click', e => {
+  if(e.target===document.getElementById('dates-modal')) document.getElementById('dates-modal').classList.remove('show');
 });
-document.getElementById('dates-toggle').addEventListener('click',()=>{
-  const b=document.getElementById('dates-body'),c=document.getElementById('dchev');
-  const hidden=b.style.display==='none';
-  b.style.display=hidden?'':'none';c.classList.toggle('open',hidden);
+document.getElementById('dates-toggle').addEventListener('click', () => {
+  const b=document.getElementById('dates-body'), c=document.getElementById('dchev');
+  const h=b.style.display==='none'; b.style.display=h?'':'none'; c.classList.toggle('open',h);
 });
 
+// ── INIT ──────────────────────────────────────────────────────────────────────
 async function init(){
   document.getElementById('sstatus').textContent = 'Loading...';
-  document.getElementById('sdot').className = 'sdot';
-  // Always load from Supabase FIRST — never render default data
-  let loaded = false;
-  let attempts = 0;
-  while(!loaded && attempts < 3){
-    loaded = await loadCloud();
-    attempts++;
-    if(!loaded) await new Promise(r => setTimeout(r, 1000));
-  }
+  await loadCloud();
   render();
-  // Poll every 5 seconds — always re-render to catch wife's changes
-  setInterval(async()=>{
-    if(!isSaving){
-      await loadCloud();
-      render();
-    }
-  }, 5000);
-}
-init();
-</script>
-</body>
-</html>
+  setInterval(async () => {
+    if (!isSaving
