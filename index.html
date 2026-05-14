@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Fran's Move-In Plan</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{--bg:#f7f6f2;--card:#fff;--text:#1c1c2e;--muted:#6b7280;--border:#e5e4df;--radius:14px;}
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -200,10 +201,12 @@ footer{text-align:center;font-size:.75rem;color:var(--muted);padding:1.5rem 1rem
 </div>
 
 <script>
-// ── CONFIG ──────────────────────────────────────────────────────────────────
-const SB_URL = 'https://lpyikpkymyctkvblhrqy.supabase.co';
-const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxweWlrcGt5bXljdGt2YmxocnF5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4NzUzNzEsImV4cCI6MjA5MjQ1MTM3MX0.T1bAt5odIDzYA0L8oXVbdf5FPIYCMJ7_YkTBpRcLxio';
-const POLL_MS = 6000;
+// ── SUPABASE CLIENT ──────────────────────────────────────────────────────────
+const { createClient } = supabase;
+const sb = createClient(
+  'https://lpyikpkymyctkvblhrqy.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxweWlrcGt5bXljdGt2YmxocnF5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4NzUzNzEsImV4cCI6MjA5MjQ1MTM3MX0.T1bAt5odIDzYA0L8oXVbdf5FPIYCMJ7_YkTBpRcLxio'
+);
 
 // ── DEFAULT DATA ─────────────────────────────────────────────────────────────
 const DEFAULT_DATES = [
@@ -253,15 +256,13 @@ let editTarget = null, deleteTarget = null, addTargetPhaseId = null;
 
 function uid(){ return 't' + Date.now() + Math.random().toString(36).slice(2,6); }
 
-// ── SUPABASE ─────────────────────────────────────────────────────────────────
-const SB_H = { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Content-Type': 'application/json' };
-
+// ── SUPABASE LOAD & SAVE ──────────────────────────────────────────────────────
 async function loadCloud(){
   try {
-    const r = await fetch(SB_URL + '/rest/v1/state?select=data&limit=1&apikey=' + SB_KEY, { cache: 'no-store' });
-    const rows = await r.json();
-    if (Array.isArray(rows) && rows.length > 0 && rows[0].data && rows[0].data.length > 2) {
-      const saved = JSON.parse(rows[0].data);
+    const { data, error } = await sb.from('state').select('data').limit(1).single();
+    if (error) { console.error('Load error:', error); setSynced(false); return false; }
+    if (data && data.data && data.data.length > 2) {
+      const saved = JSON.parse(data.data);
       state = {
         checked:   saved.checked   || [],
         collapsed: saved.collapsed || [],
@@ -275,7 +276,7 @@ async function loadCloud(){
     setSynced(true);
     return false;
   } catch(e) {
-    console.error('Load error:', e);
+    console.error('loadCloud exception:', e);
     setSynced(false);
     return false;
   }
@@ -286,24 +287,17 @@ async function saveCloud(){
   isSaving = true;
   setSynced(false);
   try {
-    const dataStr = JSON.stringify(state);
-    // Call the save_state SQL function — does UPDATE state SET data = $1
-    const r = await fetch(SB_URL + '/rest/v1/rpc/save_state', {
-      method: 'POST',
-      headers: SB_H,
-      body: JSON.stringify({ state_data: dataStr })
-    });
-    if (r.ok) {
+    const { error } = await sb.rpc('save_state', { state_data: JSON.stringify(state) });
+    if (error) {
+      console.error('save_state error:', error);
+      toast('Save failed: ' + error.message, true);
+      setSynced(false);
+    } else {
       setSynced(true);
       toast('Saved \u2713');
-    } else {
-      const t = await r.text();
-      console.error('save_state failed:', r.status, t);
-      toast('Save failed ' + r.status, true);
-      setSynced(false);
     }
   } catch(e) {
-    console.error('saveCloud error:', e);
+    console.error('saveCloud exception:', e);
     toast('Save failed', true);
     setSynced(false);
   }
@@ -372,7 +366,6 @@ function renderPhases(){
 
     const head = document.createElement('div');
     head.className = 'phase-head';
-
     const ta = document.createElement('div');
     ta.className = 'phase-title-area';
     ta.innerHTML = '<span class="ppill" style="background:'+ph.pill+';color:'+ph.pillText+'">'+ph.label+'</span>'
@@ -401,8 +394,7 @@ function renderPhases(){
       setTimeout(() => document.getElementById('add-name').focus(), 60);
     });
 
-    head.appendChild(ta);
-    head.appendChild(ab);
+    head.appendChild(ta); head.appendChild(ab);
     wrap.appendChild(head);
 
     const pbw = document.createElement('div');
@@ -487,10 +479,8 @@ function renderPhases(){
 
 function render(){ renderDates(); renderPhases(); updateCountdown(); }
 
-// ── ADD TASK ──────────────────────────────────────────────────────────────────
-document.getElementById('add-cancel').addEventListener('click', () => {
-  document.getElementById('add-modal').classList.remove('show'); addTargetPhaseId=null;
-});
+// ── MODALS ────────────────────────────────────────────────────────────────────
+document.getElementById('add-cancel').addEventListener('click', () => { document.getElementById('add-modal').classList.remove('show'); addTargetPhaseId=null; });
 document.getElementById('add-save').addEventListener('click', () => {
   const name = document.getElementById('add-name').value.trim();
   if (!name) { document.getElementById('add-name').focus(); return; }
@@ -501,11 +491,8 @@ document.getElementById('add-save').addEventListener('click', () => {
   render(); scheduleSave();
 });
 document.getElementById('add-name').addEventListener('keydown', e => { if(e.key==='Enter') document.getElementById('add-save').click(); });
-document.getElementById('add-modal').addEventListener('click', e => {
-  if(e.target===document.getElementById('add-modal')){ document.getElementById('add-modal').classList.remove('show'); addTargetPhaseId=null; }
-});
+document.getElementById('add-modal').addEventListener('click', e => { if(e.target===document.getElementById('add-modal')){ document.getElementById('add-modal').classList.remove('show'); addTargetPhaseId=null; } });
 
-// ── EDIT TASK ─────────────────────────────────────────────────────────────────
 document.getElementById('edit-cancel').addEventListener('click', () => { document.getElementById('edit-modal').classList.remove('show'); editTarget=null; });
 document.getElementById('edit-save').addEventListener('click', () => {
   if (!editTarget) return;
@@ -514,19 +501,15 @@ document.getElementById('edit-save').addEventListener('click', () => {
   const newPhId = document.getElementById('edit-phase').value;
   const oldPh   = state.phases.find(p => p.id===editTarget.phaseId);
   const task    = oldPh.tasks[editTarget.idx];
-  task.name     = name;
-  task.detail   = document.getElementById('edit-detail').value.trim();
-  task.prio     = document.getElementById('edit-prio').value;
+  task.name = name; task.detail = document.getElementById('edit-detail').value.trim();
+  task.prio = document.getElementById('edit-prio').value;
   state.prioMap[task.id] = task.prio;
   if (newPhId!==editTarget.phaseId){ oldPh.tasks.splice(editTarget.idx,1); state.phases.find(p=>p.id===newPhId).tasks.push(task); }
   document.getElementById('edit-modal').classList.remove('show'); editTarget=null;
   render(); scheduleSave();
 });
-document.getElementById('edit-modal').addEventListener('click', e => {
-  if(e.target===document.getElementById('edit-modal')){ document.getElementById('edit-modal').classList.remove('show'); editTarget=null; }
-});
+document.getElementById('edit-modal').addEventListener('click', e => { if(e.target===document.getElementById('edit-modal')){ document.getElementById('edit-modal').classList.remove('show'); editTarget=null; } });
 
-// ── DELETE TASK ───────────────────────────────────────────────────────────────
 document.getElementById('confirm-cancel').addEventListener('click', () => { document.getElementById('confirm-modal').classList.remove('show'); deleteTarget=null; });
 document.getElementById('confirm-ok').addEventListener('click', () => {
   if (!deleteTarget) return;
@@ -538,30 +521,23 @@ document.getElementById('confirm-ok').addEventListener('click', () => {
   document.getElementById('confirm-modal').classList.remove('show'); deleteTarget=null;
   render(); updateStats(); scheduleSave();
 });
-document.getElementById('confirm-modal').addEventListener('click', e => {
-  if(e.target===document.getElementById('confirm-modal')){ document.getElementById('confirm-modal').classList.remove('show'); deleteTarget=null; }
-});
+document.getElementById('confirm-modal').addEventListener('click', e => { if(e.target===document.getElementById('confirm-modal')){ document.getElementById('confirm-modal').classList.remove('show'); deleteTarget=null; } });
 
-// ── DATES EDITOR ──────────────────────────────────────────────────────────────
 function makeDateRow(container, dv, lv){
-  const row = document.createElement('div');
-  row.className = 'de-row';
+  const row = document.createElement('div'); row.className='de-row';
   const ci = document.createElement('input'); ci.className='de-chip'; ci.type='text'; ci.placeholder='Jun 27'; ci.value=dv||'';
   const li = document.createElement('input'); li.className='de-label'; li.type='text'; li.placeholder='Description...'; li.value=lv||'';
   const db = document.createElement('button'); db.className='de-del'; db.type='button'; db.textContent='\u2715';
   db.addEventListener('click', () => row.remove());
   row.appendChild(ci); row.appendChild(li); row.appendChild(db);
-  container.appendChild(row);
-  return row;
+  container.appendChild(row); return row;
 }
 document.getElementById('open-dates-editor').addEventListener('click', () => {
   const c = document.getElementById('dates-editor-rows'); c.innerHTML='';
   (state.keyDates||[]).forEach(d => makeDateRow(c, d.date, d.label));
   document.getElementById('dates-modal').classList.add('show');
 });
-document.getElementById('add-de-btn').addEventListener('click', () => {
-  makeDateRow(document.getElementById('dates-editor-rows'),'','').querySelector('input').focus();
-});
+document.getElementById('add-de-btn').addEventListener('click', () => { makeDateRow(document.getElementById('dates-editor-rows'),'','').querySelector('input').focus(); });
 document.getElementById('dates-cancel').addEventListener('click', () => document.getElementById('dates-modal').classList.remove('show'));
 document.getElementById('dates-save').addEventListener('click', () => {
   const nd = [];
@@ -574,9 +550,7 @@ document.getElementById('dates-save').addEventListener('click', () => {
   document.getElementById('dates-modal').classList.remove('show');
   render(); scheduleSave();
 });
-document.getElementById('dates-modal').addEventListener('click', e => {
-  if(e.target===document.getElementById('dates-modal')) document.getElementById('dates-modal').classList.remove('show');
-});
+document.getElementById('dates-modal').addEventListener('click', e => { if(e.target===document.getElementById('dates-modal')) document.getElementById('dates-modal').classList.remove('show'); });
 document.getElementById('dates-toggle').addEventListener('click', () => {
   const b=document.getElementById('dates-body'), c=document.getElementById('dchev');
   const h=b.style.display==='none'; b.style.display=h?'':'none'; c.classList.toggle('open',h);
@@ -587,5 +561,9 @@ async function init(){
   document.getElementById('sstatus').textContent = 'Loading...';
   await loadCloud();
   render();
-  setInterval(async () => {
-    if (!isSaving
+  setInterval(async () => { if (!isSaving){ await loadCloud(); render(); } }, 6000);
+}
+init();
+</script>
+</body>
+</html>
