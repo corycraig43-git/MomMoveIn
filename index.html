@@ -274,21 +274,18 @@ let lastLoadedData = '';
 
 async function loadCloud(){
   try {
-    // Add cache-busting timestamp to prevent stale responses
-    const ts = Date.now();
-    const r = await fetch(`${SB_URL}/rest/v1/state?select=data,created_at&limit=1&order=created_at.asc&ts=${ts}`, {
+    const r = await fetch(`${SB_URL}/rest/v1/state?select=data,created_at&limit=1&order=created_at.asc&_=${Date.now()}`, {
       headers: {
         'apikey': SB_KEY,
         'Authorization': 'Bearer ' + SB_KEY,
-        'Cache-Control': 'no-cache, no-store',
-        'Pragma': 'no-cache'
+        'Cache-Control': 'no-cache'
       }
     });
     const rows = await r.json();
-    if (Array.isArray(rows) && rows.length > 0) {
-      if (rows[0].created_at) rowCreatedAt = rows[0].created_at;
+    if(Array.isArray(rows) && rows.length > 0 && rows[0].data && rows[0].data !== '{}'){
       const incoming = rows[0].data;
-      if (incoming) {
+      if(incoming !== lastLoadedData){
+        lastLoadedData = incoming;
         const saved = JSON.parse(incoming);
         state = {
           checked:   saved.checked   || [],
@@ -297,18 +294,17 @@ async function loadCloud(){
           prioMap:   saved.prioMap   || {},
           keyDates:  saved.keyDates  || JSON.parse(JSON.stringify(DEFAULT_DATES)),
         };
-        setSynced(true);
-        return true;
       }
+      setSynced(true);
+      return true;
     }
     setSynced(true);
     return false;
-  } catch(e){ 
+  } catch(e){
     console.error('loadCloud error:', e);
-    setSynced(false); 
-    return false; 
+    setSynced(false);
+    return false;
   }
-} catch(e){ setSynced(false); return false; }
 }
 
 async function saveCloud(){
@@ -317,7 +313,7 @@ async function saveCloud(){
   setSynced(false);
   try {
     const dataStr = JSON.stringify(state);
-    // Use UPDATE via SQL RPC — always updates existing row, never inserts
+    // Use the save_state SQL function — always updates the single row
     const r = await fetch(`${SB_URL}/rest/v1/rpc/save_state`, {
       method: 'POST',
       headers: {
@@ -328,29 +324,14 @@ async function saveCloud(){
       body: JSON.stringify({state_data: dataStr})
     });
     if(r.ok){
+      lastLoadedData = dataStr;
       setSynced(true);
       showToast('Saved ✓', false);
     } else {
-      // Fallback: PATCH all rows (since there should only be one)
-      const r2 = await fetch(`${SB_URL}/rest/v1/state?created_at=not.is.null`, {
-        method: 'PATCH',
-        headers: {
-          'apikey': SB_KEY,
-          'Authorization': 'Bearer ' + SB_KEY,
-          'Content-Type': 'application/json',
-          'Prefer': 'return=minimal'
-        },
-        body: JSON.stringify({data: dataStr})
-      });
-      if(r2.ok){
-        setSynced(true);
-        showToast('Saved ✓', false);
-      } else {
-        const err = await r2.text();
-        console.error('Save failed:', r2.status, err);
-        showToast('Save failed: ' + r2.status, true);
-        setSynced(false);
-      }
+      const err = await r.text();
+      console.error('save_state RPC failed:', r.status, err);
+      showToast('Save failed: ' + r.status, true);
+      setSynced(false);
     }
   } catch(e){
     console.error('saveCloud error:', e);
