@@ -6,7 +6,7 @@
 <title>Fran's Move-In Plan</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
 <style>
 :root{--bg:#f7f6f2;--card:#fff;--text:#1c1c2e;--muted:#6b7280;--border:#e5e4df;--radius:14px;}
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -578,4 +578,5 @@ document.getElementById('add-save').addEventListener('click', () => {
 document.getElementById('add-name').addEventListener('keydown', e => { if(e.key==='Enter') document.getElementById('add-save').click(); });
 document.getElementById('add-modal').addEventListener('click', e => { if(e.target===document.getElementById('add-modal')){ document.getElementById('add-modal').classList.remove('show'); addTargetPhaseId=null; } });
 
-document.getElementById('edit-cancel').addEventListener('click', () => { document.getElementById('edit-modal').classList
+document.getElementById('edit-cancel').addEventListener('click', () => { document.getElementById('edit-modal').classList.remove('show'); editTarget=null; });
+document.getElementById('edit-save').addEventLis
