@@ -324,10 +324,11 @@ function sortKeyDates(dates) {
 // ── SUPABASE LOAD & SAVE ──────────────────────────────────────────────────────
 async function loadCloud(){
   try {
-    const { data, error } = await sb.from('state').select('data').limit(1).single();
+    const { data, error } = await sb.from('state').select('data').limit(1);
     if (error) { console.error('Load error:', error); setSynced(false); return false; }
-    if (data && data.data && data.data.length > 2) {
-      const saved = JSON.parse(data.data);
+    const row = Array.isArray(data) ? data[0] : data;
+    if (row && row.data && row.data.length > 2) {
+      const saved = JSON.parse(row.data);
       state = {
         checked:   saved.checked   || [],
         collapsed: saved.collapsed || [],
@@ -579,4 +580,4 @@ document.getElementById('add-name').addEventListener('keydown', e => { if(e.key=
 document.getElementById('add-modal').addEventListener('click', e => { if(e.target===document.getElementById('add-modal')){ document.getElementById('add-modal').classList.remove('show'); addTargetPhaseId=null; } });
 
 document.getElementById('edit-cancel').addEventListener('click', () => { document.getElementById('edit-modal').classList.remove('show'); editTarget=null; });
-document.getElementById('edit-save').addEventLis
+documen
